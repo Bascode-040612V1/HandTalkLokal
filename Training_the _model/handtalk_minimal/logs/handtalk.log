@@ -1,0 +1,16 @@
+2025-12-14 15:53:17,934 - HandTalk - INFO - This is an INFO message
+2025-12-14 15:53:17,935 - HandTalk - WARNING - This is a WARNING message
+2025-12-14 15:53:17,935 - HandTalk - ERROR - This is an ERROR message
+2025-12-14 15:54:27,714 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Good Evening' (both hands)
+2025-12-14 15:54:27,714 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Good Evening' (both hands)
+2025-12-14 15:54:40,324 - HandTalk - INFO - Successfully collected 50 samples for gesture: 'Good Evening'
+2025-12-14 15:54:40,743 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2025-12-14 15:54:40,752 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Good Evening_seq_001_20251214_155440.json
+2025-12-14 15:54:40,752 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2025-12-14 15:54:40,772 - HandTalk - INFO - Bimanual data loaded: 250 samples with 144 features each
+2025-12-14 15:54:40,772 - HandTalk - INFO - Data split for training and testing
+2025-12-14 15:54:40,772 - HandTalk - INFO - Training Random Forest classifier...
+2025-12-14 15:54:40,911 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2025-12-14 15:54:40,960 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2025-12-14 15:54:40,960 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2025-12-14 15:54:50,572 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl

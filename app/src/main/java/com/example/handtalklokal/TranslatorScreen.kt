@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
@@ -12,6 +14,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -27,15 +30,23 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.VideocamOff
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.CameraFront
+import androidx.compose.material.icons.filled.CameraRear
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.ui.zIndex
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,12 +63,12 @@ import java.util.*
 
 fun getDialectName(code: String): String {
     return when (code) {
-        "en" -> "English"
-        "fil" -> "Filipino"
+        "tl" -> "Tagalog"
+        "fil" -> "Filipino"  // Include Filipino as an alias for Tagalog
         "hil" -> "Hiligaynon"
         "ceb" -> "Cebuano"
         "mrn" -> "Maranao"
-        else -> "English"
+        else -> "Tagalog"  // Default to Tagalog
     }
 }
 
@@ -70,9 +81,12 @@ fun SignLanguageTranslatorScreenWithFeatures(
     val context = LocalContext.current
     val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     val recognizedText by viewModel.recognizedText.collectAsState()
+    val currentPhrase by viewModel.currentPhrase.collectAsState()
     val sentenceHistory by viewModel.sentenceHistory.collectAsState(initial = emptyList())
     val isRecording by viewModel.isRecording.collectAsState()
     val selectedDialect by viewModel.selectedDialect.collectAsState()
+    val isFrontCamera by viewModel.isFrontCamera.collectAsState()
+    val landmarks by viewModel.landmarks.collectAsState() // Collect landmark data
     val listState = rememberLazyListState()
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     
@@ -114,76 +128,6 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Dialect Selector
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Dialect:",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    
-                    var expanded by remember { mutableStateOf(false) }
-                    val dialects = listOf(
-                        "en" to "English",
-                        "fil" to "Filipino",
-                        "hil" to "Hiligaynon",
-                        "ceb" to "Cebuano",
-                        "mrn" to "Maranao"
-                    )
-                    
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded }
-                    ) {
-                        OutlinedButton(
-                            onClick = { expanded = true },
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = MaterialTheme.colorScheme.primary
-                            ),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                text = dialects.find { it.first == selectedDialect }?.second ?: "English",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                        ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            dialects.forEach { dialect ->
-                                DropdownMenuItem(
-                                    text = { 
-                                        Text(
-                                            text = dialect.second,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        ) 
-                                    },
-                                    onClick = {
-                                        viewModel.setDialect(dialect.first)
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            
             // Camera Preview
             Card(
                 modifier = Modifier
@@ -198,7 +142,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f) // Ensure 1:1 aspect ratio for the container
+                        .aspectRatio(4f/3f) // Standard 4:3 aspect ratio to match camera output
                         .padding(16.dp)
                 ) {
                     // Debug: Show current permission state
@@ -210,58 +154,68 @@ fun SignLanguageTranslatorScreenWithFeatures(
                     */
                     
                     if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        // Actual Camera Preview
-                        CameraPreview(
+                        // Actual Camera Preview with landmark overlay
+                        CameraPreviewWithLandmarks(
                             isRecording = true, // Always recording when permission is granted
+                            isFrontCamera = isFrontCamera,
+                            landmarks = landmarks, // Pass landmark data
                             onImageCaptured = { image ->
                                 // Process the captured image
                                 viewModel.processImage(image)
+                            },
+                            onCameraSwitch = {
+                                viewModel.switchCamera()
                             }
                         )
                     } else {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.VideocamOff,
-                                contentDescription = "Camera off",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(48.dp)
-                            )
-                            
-                            Text(
-                                text = "Camera permission required",
-                                style = MaterialTheme.typography.headlineSmall,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
-                            )
-                            
-                            Text(
-                                text = "Please grant camera permission to use the sign language translator",
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-                            
-                            Button(
-                                onClick = { cameraPermissionState.launchPermissionRequest() },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
                             ) {
-                                Text("Grant Camera Permission")
+                                Icon(
+                                    imageVector = Icons.Default.VideocamOff,
+                                    contentDescription = "Camera off",
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(48.dp)
+                                )
+                                
+                                Text(
+                                    text = "Camera permission required",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                                )
+                                
+                                Text(
+                                    text = "Please grant camera permission to use the sign language translator",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                                
+                                Button(
+                                    onClick = { cameraPermissionState.launchPermissionRequest() },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                ) {
+                                    Text("Grant Camera Permission")
+                                }
                             }
                         }
                     }
                 }
             }
             
-            // Recognized Text Display
+            // Current Phrase and Sentence History
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -277,48 +231,17 @@ fun SignLanguageTranslatorScreenWithFeatures(
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Text(
-                        text = "Recognized Gesture:",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Text(
-                        text = recognizedText.ifEmpty { "Waiting for gesture..." },
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-            }
-            
-            // Sentence History
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "Sentence History:",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                    // Removed Current Phrase box as requested
+                    // Only showing Completed Sentences box
                     
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(100.dp)
+                            .height(150.dp)
                     ) {
-                        items(sentenceHistory) { sentence ->
+                        items(sentenceHistory.reversed()) { sentence ->  // Show in reverse order (newest first)
+                            // The sentence is already translated in the ViewModel, so display as-is
                             Text(
                                 text = sentence,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -340,80 +263,116 @@ fun SignLanguageTranslatorScreenWithFeatures(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(16.dp)
                 ) {
-                    Text(
-                        text = "Dialect:",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(end = 16.dp)
-                    )
+                    // Select Dialect button
+                    var showDialog by remember { mutableStateOf(false) }
                     
-                    ExposedDropdownMenuBox(
-                        expanded = false,
-                        onExpandedChange = { /* Handle menu expansion */ }
+                    Button(
+                        onClick = { showDialog = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
                     ) {
-                        OutlinedButton(
-                            onClick = { /* Handle click */ },
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = getDialectName(selectedDialect),
-                                style = MaterialTheme.typography.bodyLarge
+                                text = getDialectName(selectedDialect), // Show selected dialect name
+                                style = MaterialTheme.typography.titleMedium
                             )
-                        }
-                        ExposedDropdownMenu(
-                            expanded = false,
-                            onDismissRequest = { /* Handle dismiss */ }
-                        ) {
-                            listOf(
-                                "en" to "English",
-                                "fil" to "Filipino",
-                                "hil" to "Hiligaynon",
-                                "ceb" to "Cebuano",
-                                "mrn" to "Maranao"
-                            ).forEach { dialect ->
-                                DropdownMenuItem(
-                                    text = { 
-                                        Text(
-                                            text = dialect.second,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        ) 
-                                    },
-                                    onClick = {
-                                        viewModel.setDialect(dialect.first)
-                                    }
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = "Expand"
+                            )
                         }
                     }
                     
-                    Spacer(modifier = Modifier.width(16.dp))
+                    // Dialect Selection Dialog
+                    if (showDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showDialog = false },
+                            title = {
+                                Text(
+                                    text = "Select Dialect",
+                                    style = MaterialTheme.typography.headlineSmall
+                                )
+                            },
+                            text = {
+                                Column {
+                                    val dialects = listOf(
+                                        "ceb" to "Cebuano",
+                                        "hil" to "Hiligaynon",
+                                        "mrn" to "Maranao",
+                                        "tl" to "Tagalog"
+                                    )
+                                    
+                                    dialects.forEach { dialect ->
+                                        Button(
+                                            onClick = {
+                                                viewModel.setDialect(dialect.first)
+                                                showDialog = false
+                                            },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = if (selectedDialect == dialect.first) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+                                                contentColor = if (selectedDialect == dialect.first) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
+                                            )
+                                        ) {
+                                            Text(
+                                                text = dialect.second,
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                modifier = Modifier.fillMaxWidth()
+                                            )
+                                        }
+                                    }
+                                }
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = { showDialog = false }
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        )
+                    }
                     
+                    // Clear History button
                     Button(
                         onClick = {
                             // Clear history
                             viewModel.clearSentenceHistory()
                             viewModel.updateRecognizedText("")
                         },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error,
                             contentColor = MaterialTheme.colorScheme.onError
                         )
                     ) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear")
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Clear",
+                                text = "Clear History",
                                 maxLines = 1,
                                 softWrap = false
                             )
@@ -425,57 +384,117 @@ fun SignLanguageTranslatorScreenWithFeatures(
     }
 }
 
+
 @Composable
-fun CameraPreview(
+fun CameraPreviewWithLandmarks(
     isRecording: Boolean,
-    onImageCaptured: (ImageProxy) -> Unit
+    isFrontCamera: Boolean,
+    landmarks: List<LandmarkPoint>,
+    onImageCaptured: (ImageProxy) -> Unit,
+    onCameraSwitch: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
+    var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
     
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f) // 1:1 aspect ratio
+            .aspectRatio(4f/3f) // Standard camera aspect ratio to match camera output
             .padding(16.dp)
-            .border(2.dp, Color.White, CircleShape) // Visual indicator for 1:1 area
     ) {
         AndroidView(
             factory = { ctx ->
                 val previewView = PreviewView(ctx)
-                val executor = ContextCompat.getMainExecutor(ctx)
+                // Fix 3: Explicitly set PreviewView scale type
+                previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
+                previewView
+            },
+            update = { previewView ->
+                val executor = ContextCompat.getMainExecutor(previewView.context)
                 
-                coroutineScope.launch {
-                    val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
-                    cameraProviderFuture.addListener({
-                        val cameraProvider = cameraProviderFuture.get()
+                // Function to bind camera with current settings
+                fun bindCamera() {
+                    cameraProvider?.let { provider ->
+                        // Select camera based on state
+                        val cameraSelector = if (isFrontCamera) {
+                            CameraSelector.DEFAULT_FRONT_CAMERA
+                        } else {
+                            CameraSelector.DEFAULT_BACK_CAMERA
+                        }
                         
-                        // Preview use case
-                        val preview = androidx.camera.core.Preview.Builder().build()
-                            .also { it.setSurfaceProvider(previewView.surfaceProvider) }
+                                        // Configure preview with explicit 1:1 aspect ratio
+                        val preview = androidx.camera.core.Preview.Builder()
+                            .setTargetResolution(android.util.Size(640, 480)) // Standard 4:3 resolution to match preview aspect ratio
+                            .build()
                         
-                        // Select back camera as default
-                        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                        // Set proper target rotation to match device orientation
+                        preview.setTargetRotation(previewView.display.rotation)
+                        
+                        preview.setSurfaceProvider(previewView.surfaceProvider)
+                        
+                        // Configure image analysis use case for processing frames
+                        val imageAnalyzer = ImageAnalysis.Builder()
+                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .build()
+                        
+                        imageAnalyzer.setAnalyzer(executor) { image ->
+                            onImageCaptured(image)
+                        }
                         
                         try {
                             // Unbind use cases before rebinding
-                            cameraProvider.unbindAll()
+                            provider.unbindAll()
                             
                             // Bind use cases to camera
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner, cameraSelector, preview
+                            provider.bindToLifecycle(
+                                lifecycleOwner, cameraSelector, preview, imageAnalyzer
                             )
                         } catch (exc: Exception) {
                             Log.e("CameraPreview", "Camera binding error", exc)
                         }
-                    }, executor)
+                    }
                 }
                 
-                previewView
+                // Initialize camera provider if not already done
+                if (cameraProvider == null) {
+                    val cameraProviderFuture = ProcessCameraProvider.getInstance(previewView.context)
+                    cameraProviderFuture.addListener({
+                        cameraProvider = cameraProviderFuture.get()
+                        bindCamera() // Bind camera with initial settings
+                    }, executor)
+                } else {
+                    // Re-bind camera with new settings when isFrontCamera changes
+                    bindCamera()
+                }
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.matchParentSize() // Fix 2: Ensure the preview matches parent size
         )
+        
+        // Overlay for drawing hand landmarks - matches parent size to align with preview
+        // HandLandmarkOverlay(landmarks = landmarks, isFrontCamera = isFrontCamera) // Removed visual overlays as requested
+        
+        // Camera switch button - positioned at the bottom center
+        Button(
+            onClick = onCameraSwitch,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+                .size(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Black.copy(alpha = 0.7f),
+                contentColor = Color.White
+            ),
+            contentPadding = PaddingValues(0.dp),
+            shape = CircleShape
+        ) {
+            Icon(
+                imageVector = if (isFrontCamera) Icons.Default.CameraFront else Icons.Default.CameraRear,
+                contentDescription = if (isFrontCamera) "Switch to back camera" else "Switch to front camera",
+                modifier = Modifier.size(32.dp)
+            )
+        }
         
         // Recording indicator
         if (isRecording) {
@@ -487,4 +506,17 @@ fun CameraPreview(
             )
         }
     }
+}
+
+/**
+ * Overlay composable for drawing hand landmarks
+ * Currently renders nothing as visual overlays have been removed
+ */
+@Composable
+fun HandLandmarkOverlay(
+    landmarks: List<LandmarkPoint> = emptyList(),
+    isFrontCamera: Boolean = false
+) {
+    // This composable exists to maintain compatibility but renders nothing
+    // Visual overlays have been removed as requested
 }

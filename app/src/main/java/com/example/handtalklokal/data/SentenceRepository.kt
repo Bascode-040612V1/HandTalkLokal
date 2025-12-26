@@ -22,7 +22,8 @@ class SentenceRepository(private val context: Context) {
             if (sentencesString.isEmpty()) {
                 emptyList()
             } else {
-                sentencesString.split("|SEPARATOR|")
+                // Split by newlines to get individual lines
+                sentencesString.split("\n").filter { it.isNotEmpty() }
             }
         }
     
@@ -32,9 +33,22 @@ class SentenceRepository(private val context: Context) {
             val newSentences = if (currentSentences.isEmpty()) {
                 sentence
             } else {
-                "$currentSentences|SEPARATOR|$sentence"
+                "$currentSentences\n$sentence"
             }
             preferences[SENTENCES_KEY] = newSentences
+        }
+    }
+    
+    suspend fun updateLastSentence(newSentence: String) {
+        context.dataStore.edit { preferences ->
+            val currentSentences = preferences[SENTENCES_KEY] ?: ""
+            if (currentSentences.isNotEmpty()) {
+                val sentencesList = currentSentences.split("\n").toMutableList()
+                if (sentencesList.isNotEmpty()) {
+                    sentencesList[sentencesList.size - 1] = newSentence
+                    preferences[SENTENCES_KEY] = sentencesList.joinToString("\n")
+                }
+            }
         }
     }
     
@@ -48,9 +62,9 @@ class SentenceRepository(private val context: Context) {
         context.dataStore.edit { preferences ->
             val currentSentences = preferences[SENTENCES_KEY] ?: ""
             if (currentSentences.isNotEmpty()) {
-                val sentencesList = currentSentences.split("|SEPARATOR|").toMutableList()
+                val sentencesList = currentSentences.split("\n").toMutableList()
                 sentencesList.remove(sentence)
-                preferences[SENTENCES_KEY] = sentencesList.joinToString("|SEPARATOR|")
+                preferences[SENTENCES_KEY] = sentencesList.joinToString("\n")
             }
         }
     }

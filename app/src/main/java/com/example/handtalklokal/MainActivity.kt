@@ -171,6 +171,16 @@ fun HomeScreen(navController: NavHostController) {
                     }
                 }
             }
+            
+            // Version number text
+            Text(
+                text = "Version 2",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(top = 24.dp)
+            )
         }
     }
 }
