@@ -51,7 +51,7 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
         }
     ) { innerPadding ->
         if (selectedCategory == null) {
-            // Category Selection Screen
+            // Category Selection  Screen
             CategorySelectionScreen(
                 modifier = Modifier.padding(innerPadding),
                 onCategorySelected = { category -> 
