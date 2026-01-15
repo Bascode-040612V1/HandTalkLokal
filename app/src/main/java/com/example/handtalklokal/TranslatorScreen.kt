@@ -324,6 +324,47 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
+            // Dialect Selection Dialog
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = {
+                        Text(
+                            text = "Select Dialect",
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
+                    text = {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(listOf("tl", "fil", "hil", "ceb", "mrn")) { dialectCode ->
+                                TextButton(
+                                    onClick = {
+                                        viewModel.setDialect(dialectCode)
+                                        showDialog = false
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = getDialectName(dialectCode),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = { showDialog = false }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
+            
             // Current Phrase and Sentence History
             Card(
                 modifier = Modifier
