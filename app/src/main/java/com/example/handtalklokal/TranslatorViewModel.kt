@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.contentOrNull
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -29,6 +33,8 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
     companion object {
         private const val WORD_PAUSE_DELAY = 250L // 250ms pause between words
         private const val SENTENCE_PAUSE_DELAY = 750L // 750ms pause between sentences
+        private const val PHRASE_COMPLETE_THRESHOLD = 3000L // 3 seconds threshold for phrase completion
+        private const val GESTURE_SPEECH_COOLDOWN = 1500L // 1.5 seconds cooldown between same gesture speech
     }
     
     private val repository = SentenceRepository(application)
@@ -43,7 +49,7 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
     private val _confidenceLevel = MutableStateFlow(0.0f)
     val confidenceLevel: StateFlow<Float> = _confidenceLevel.asStateFlow()
     
-    // Current phrase being built - now used to accumulate words in a line
+    // Current phrase being built
     private val _currentPhrase = MutableStateFlow("")
     val currentPhrase: StateFlow<String> = _currentPhrase.asStateFlow()
     
@@ -87,14 +93,15 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
     private var pendingConfidence: Float = 0.0f
     private var gestureDebounceJob: Job? = null
     
+    // Speech cooldown tracking to prevent repeated gesture speaking
+    private var lastSpokenGesture: String? = null
+    private var lastSpeechTime: Long = 0
+    
     // Timer for phrase finalization
     private var phraseTimer: Job? = null
     
-    // Track the current line being built
+    // Current line for sentence building
     private var currentLine = ""
-    
-    // Time threshold for considering a phrase complete (in milliseconds)
-    private val PHRASE_COMPLETE_THRESHOLD = 3000L // 3 seconds
     
     init {
         initializeTextToSpeech()
@@ -373,27 +380,48 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
         
         // Only add to sentence history if translation is successful (not empty)
         if (translatedGesture.isNotBlank()) {
-            // Implement the new behavior: concatenate to current line or start a new line
-            // We'll concatenate if the current line is not empty and the time threshold hasn't passed
-            val currentTime = System.currentTimeMillis()
-            val isNewLine = currentLine.isEmpty() || (currentTime - lastGestureTime) > PHRASE_COMPLETE_THRESHOLD
+            // Check sentence cooldown to prevent repeated gestures from spamming the sentence display
+            val sentenceCheckTime = System.currentTimeMillis()
+            val isSameGestureRecentlyInSentence = translatedGesture == lastSpokenGesture && 
+                (sentenceCheckTime - lastSpeechTime) < GESTURE_SPEECH_COOLDOWN
             
-            if (isNewLine) {
-                // Start a new line with the translated gesture
-                currentLine = translatedGesture
-                addToSentenceHistory(currentLine)
-            } else {
-                // Concatenate to the current line
-                currentLine = if (currentLine.isEmpty()) translatedGesture else "$currentLine $translatedGesture"
+            if (!isSameGestureRecentlyInSentence) {
+                // Implement the new behavior: concatenate to current line or start a new line
+                // We'll concatenate if the current line is not empty and the time threshold hasn't passed
+                val isNewLine = currentLine.isEmpty() || (sentenceCheckTime - lastGestureTime) > PHRASE_COMPLETE_THRESHOLD
                 
-                // Update the last line in the repository to reflect the concatenated line
-                viewModelScope.launch {
-                    repository.updateLastSentence(currentLine)
+                if (isNewLine) {
+                    // Start a new line with the translated gesture
+                    currentLine = translatedGesture
+                    addToSentenceHistory(currentLine)
+                } else {
+                    // Concatenate to the current line
+                    currentLine = if (currentLine.isEmpty()) translatedGesture else "$currentLine $translatedGesture"
+                    
+                    // Update the last line in the repository to reflect the concatenated line
+                    viewModelScope.launch {
+                        repository.updateLastSentence(currentLine)
+                    }
                 }
+                
+                // Update gesture timing for sentence logic
+                lastGestureTime = sentenceCheckTime
+            } else {
+                Log.d("GestureStability", "Skipping sentence update for repeated gesture: $translatedGesture, cooldown remaining: ${GESTURE_SPEECH_COOLDOWN - (sentenceCheckTime - lastSpeechTime)}ms")
             }
             
-            // Speak the translated text (not the original English)
-            speakText(translatedGesture)
+            // Check speech cooldown to prevent repeated gestures from being spoken too quickly
+            // Use the same timing check as sentence updates for consistency
+            if (!isSameGestureRecentlyInSentence) {
+                // Speak the translated text (not the original English)
+                speakText(translatedGesture)
+                // Update speech tracking
+                lastSpokenGesture = translatedGesture
+                lastSpeechTime = sentenceCheckTime
+                Log.d("GestureStability", "Speaking gesture: $translatedGesture at $sentenceCheckTime")
+            } else {
+                Log.d("GestureStability", "Skipping speech for repeated gesture: $translatedGesture, cooldown remaining: ${GESTURE_SPEECH_COOLDOWN - (sentenceCheckTime - lastSpeechTime)}ms")
+            }
         } else {
             Log.d("TranslationDebug", "Translation failed, not adding to history: $sanitizedGesture")
         }
@@ -404,79 +432,13 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
         
         // Track the accepted gesture for duplicate suppression
         lastAcceptedGesture = sanitizedGesture
-        lastGestureTime = System.currentTimeMillis()
     }
     
     private fun translateGesture(gesture: String): String {
         Log.d("TranslationDebug", "Translating gesture: '$gesture' with selected dialect: '${_selectedDialect.value}'")
         
-        // This function implements the translation logic
-        val translationMap = mapOf(
-            "Hello" to mapOf(
-                "en" to "Hello",
-                "tl" to "Kumusta",
-                "fil" to "Kumusta",
-                "hil" to "Kamusta",
-                "ceb" to "Kumusta",
-                "mrn" to "Assalamu Alaikum"
-            ),
-            "Hi" to mapOf(
-                "en" to "Hi",
-                "tl" to "Kumusta",
-                "fil" to "Kumusta",
-                "hil" to "Kamusta",
-                "ceb" to "Kumusta",
-                "mrn" to "Assalamu"
-            ),
-            "Morning" to mapOf(
-                "en" to "Morning",
-                "tl" to "Agahan",
-                "fil" to "Agahan",
-                "hil" to "Agahon",
-                "ceb" to "Mading",
-                "mrn" to "Mading"
-            ),
-            "Noon" to mapOf(
-                "en" to "Noon",
-                "tl" to "Tanghali",
-                "fil" to "Tanghali",
-                "hil" to "Tanghali",
-                "ceb" to "Tanghali",
-                "mrn" to "Tanghali"
-            ),
-            "Afternoon" to mapOf(
-                "en" to "Afternoon",
-                "tl" to "Hapon",
-                "fil" to "Hapon",
-                "hil" to "Hapon",
-                "ceb" to "Hapon",
-                "mrn" to "Hapon"
-            ),
-            "Bye" to mapOf(
-                "en" to "Bye",
-                "tl" to "Paalam",
-                "fil" to "Paalam",
-                "hil" to "Palay",
-                "ceb" to "Abay",
-                "mrn" to "Alay"
-            ),
-            "Thank you" to mapOf(
-                "en" to "Thank you",
-                "tl" to "Salamat",
-                "fil" to "Salamat",
-                "hil" to "Salamat",
-                "ceb" to "Salamat",
-                "mrn" to "Salamat"
-            ),
-            "Good" to mapOf(
-                "en" to "Good",
-                "tl" to "Maganda",
-                "fil" to "Maganda",
-                "hil" to "Maayong",
-                "ceb" to "Maayo",
-                "mrn" to "Tambay"
-            )
-        )
+        // Load translations from JSON file
+        val translationMap = loadTranslationsFromJson()
         
         // Check if the gesture exists in the translation map
         val phraseTranslations = translationMap[gesture]
@@ -493,6 +455,100 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
         
         Log.d("TranslationDebug", "Translation result for '$gesture': '$result' using dialect '${_selectedDialect.value}'")
         return result
+    }
+    
+    private fun loadTranslationsFromJson(): Map<String, Map<String, String>> {
+        return try {
+            val jsonString = getApplication<Application>().assets.open("translations.json")
+                .bufferedReader().use { it.readText() }
+            
+            // Parse the JSON using kotlinx.serialization
+            val json = Json { ignoreUnknownKeys = true }
+            val jsonObject = json.decodeFromString<JsonObject>(jsonString)
+            
+            val result = mutableMapOf<String, Map<String, String>>()
+            
+            jsonObject.forEach { (gesture, dialectsElement) ->
+                if (dialectsElement is JsonObject) {
+                    val dialectMap = mutableMapOf<String, String>()
+                    dialectsElement.forEach { (dialect, translationElement) ->
+                        dialectMap[dialect] = translationElement.toString().replace("\"", "")
+                    }
+                    result[gesture] = dialectMap
+                }
+            }
+            
+            result
+        } catch (e: Exception) {
+            Log.e("TranslationDebug", "Error loading translations from JSON", e)
+            // Fallback to hardcoded map in case of error
+            mapOf(
+                "Hello" to mapOf(
+                    "en" to "Hello",
+                    "tl" to "Kumusta",
+                    "fil" to "Kumusta",
+                    "hil" to "Kamusta",
+                    "ceb" to "Kumusta",
+                    "mrn" to "Assalamu Alaikum"
+                ),
+                "Hi" to mapOf(
+                    "en" to "Hi",
+                    "tl" to "Kumusta",
+                    "fil" to "Kumusta",
+                    "hil" to "Kamusta",
+                    "ceb" to "Kumusta",
+                    "mrn" to "Assalamu"
+                ),
+                "Morning" to mapOf(
+                    "en" to "Morning",
+                    "tl" to "Agahan",
+                    "fil" to "Agahan",
+                    "hil" to "Agahon",
+                    "ceb" to "Mading",
+                    "mrn" to "Mading"
+                ),
+                "Noon" to mapOf(
+                    "en" to "Noon",
+                    "tl" to "Tanghali",
+                    "fil" to "Tanghali",
+                    "hil" to "Tanghali",
+                    "ceb" to "Tanghali",
+                    "mrn" to "Tanghali"
+                ),
+                "Afternoon" to mapOf(
+                    "en" to "Afternoon",
+                    "tl" to "Hapon",
+                    "fil" to "Hapon",
+                    "hil" to "Hapon",
+                    "ceb" to "Hapon",
+                    "mrn" to "Hapon"
+                ),
+                "Bye" to mapOf(
+                    "en" to "Bye",
+                    "tl" to "Paalam",
+                    "fil" to "Paalam",
+                    "hil" to "Palay",
+                    "ceb" to "Abay",
+                    "mrn" to "Alay"
+                ),
+                "Thank you" to mapOf(
+                    "en" to "Thank you",
+                    "tl" to "Salamat",
+                    "fil" to "Salamat",
+                    "hil" to "Salamat",
+                    "ceb" to "Salamat",
+                    "mrn" to "Salamat"
+                ),
+                "Good" to mapOf(
+                    "en" to "Good",
+                    "tl" to "Maganda",
+                    "fil" to "Maganda",
+                    "hil" to "Maayong",
+                    "ceb" to "Maayo",
+                    "mrn" to "Tambay"
+                )
+            )
+        }
     }
     
     private fun getLocaleForDialect(code: String): Locale {

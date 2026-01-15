@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.app.ActivityCompat
@@ -94,30 +95,20 @@ fun SignLanguageTranslatorScreenWithFeatures(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
                 title = { 
                     Text(
                         text = "Sign Language Translator",
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            lineHeight = 28.sp
+                        )
                     ) 
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -128,6 +119,9 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            // Declare showDialog state at column level for accessibility
+            var showDialog by remember { mutableStateOf(false) }
+            
             // Camera Preview
             Card(
                 modifier = Modifier
@@ -139,35 +133,117 @@ fun SignLanguageTranslatorScreenWithFeatures(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
+                // Camera Preview Container with 1:1 aspect ratio
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(4f/3f) // Standard 4:3 aspect ratio to match camera output
+                        .aspectRatio(1f) // Square 1:1 aspect ratio
                         .padding(16.dp)
                 ) {
-                    // Debug: Show current permission state
-                    /*
-                    Text(
-                        text = "Permission state: ${cameraPermissionState.status}",
-                        modifier = Modifier.align(Alignment.TopStart)
-                    )
-                    */
+                    // Declare camera provider state outside AndroidView
+                    var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
+                    val executor = remember { ContextCompat.getMainExecutor(context) }
                     
                     if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        // Actual Camera Preview with landmark overlay
-                        CameraPreviewWithLandmarks(
-                            isRecording = true, // Always recording when permission is granted
-                            isFrontCamera = isFrontCamera,
-                            landmarks = landmarks, // Pass landmark data
-                            onImageCaptured = { image ->
-                                // Process the captured image
-                                viewModel.processImage(image)
+                        // Direct Camera Preview - no wrapper boxes
+                        AndroidView(
+                            factory = { ctx ->
+                                val previewView = PreviewView(ctx)
+                                previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
+                                previewView
                             },
-                            onCameraSwitch = {
-                                viewModel.switchCamera()
-                            }
+                            update = { previewView ->
+                                // Function to bind camera with current settings
+                                fun bindCamera() {
+                                    cameraProvider?.let { provider ->
+                                        // Select camera based on state
+                                        val cameraSelector = if (isFrontCamera) {
+                                            CameraSelector.DEFAULT_FRONT_CAMERA
+                                        } else {
+                                            CameraSelector.DEFAULT_BACK_CAMERA
+                                        }
+                                        
+                                        // Configure preview with square resolution
+                                        val preview = androidx.camera.core.Preview.Builder()
+                                            .setTargetResolution(android.util.Size(480, 480)) // Square resolution for 1:1
+                                            .build()
+                                        
+                                        // Set proper target rotation to match device orientation
+                                        preview.setTargetRotation(previewView.display.rotation)
+                                        preview.setSurfaceProvider(previewView.surfaceProvider)
+                                        
+                                        // Configure image analysis use case for processing frames
+                                        val imageAnalyzer = ImageAnalysis.Builder()
+                                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                                            .build()
+                                        
+                                        imageAnalyzer.setAnalyzer(executor) { image ->
+                                            viewModel.processImage(image)
+                                        }
+                                        
+                                        try {
+                                            // Unbind use cases before rebinding
+                                            provider.unbindAll()
+                                            
+                                            // Bind use cases to camera
+                                            provider.bindToLifecycle(
+                                                lifecycleOwner, cameraSelector, preview, imageAnalyzer
+                                            )
+                                        } catch (exc: Exception) {
+                                            Log.e("CameraPreview", "Camera binding error", exc)
+                                        }
+                                    }
+                                }
+                                
+                                // Initialize camera provider if not already done
+                                if (cameraProvider == null) {
+                                    val cameraProviderFuture = ProcessCameraProvider.getInstance(previewView.context)
+                                    cameraProviderFuture.addListener({
+                                        cameraProvider = cameraProviderFuture.get()
+                                        bindCamera() // Bind camera with initial settings
+                                    }, executor)
+                                } else {
+                                    // Re-bind camera with new settings when isFrontCamera changes
+                                    bindCamera()
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize() // Fill the 1:1 container
                         )
+                        
+                        // Camera switch button - positioned at the bottom center
+                        Button(
+                            onClick = { viewModel.switchCamera() },
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(16.dp)
+                                .size(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Black.copy(alpha = 0.7f),
+                                contentColor = Color.White
+                            ),
+                            contentPadding = PaddingValues(0.dp),
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                imageVector = if (isFrontCamera) Icons.Default.CameraFront else Icons.Default.CameraRear,
+                                contentDescription = if (isFrontCamera) "Switch to back camera" else "Switch to front camera",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                        
+// Dialect selector button moved below camera preview
+                        
+                        // Recording indicator
+                        if (true) { // Always show recording indicator since camera is always active
+                            Box(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .align(Alignment.TopEnd)
+                                    .background(Color.Red, CircleShape)
+                            )
+                        }
                     } else {
+                        // Permission denied UI
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -215,6 +291,39 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
+            // Dialect selector button - positioned below camera preview, aligned to right
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(
+                    onClick = { showDialog = true },
+                    modifier = Modifier.fillMaxWidth(0.5f), // Half the width
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = getDialectName(selectedDialect),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Expand"
+                        )
+                    }
+                }
+            }
+            
             // Current Phrase and Sentence History
             Card(
                 modifier = Modifier
@@ -252,271 +361,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
-            // Control Buttons - Replaced with Dialect Selector
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    // Select Dialect button
-                    var showDialog by remember { mutableStateOf(false) }
-                    
-                    Button(
-                        onClick = { showDialog = true },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = getDialectName(selectedDialect), // Show selected dialect name
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Icon(
-                                imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = "Expand"
-                            )
-                        }
-                    }
-                    
-                    // Dialect Selection Dialog
-                    if (showDialog) {
-                        AlertDialog(
-                            onDismissRequest = { showDialog = false },
-                            title = {
-                                Text(
-                                    text = "Select Dialect",
-                                    style = MaterialTheme.typography.headlineSmall
-                                )
-                            },
-                            text = {
-                                Column {
-                                    val dialects = listOf(
-                                        "ceb" to "Cebuano",
-                                        "hil" to "Hiligaynon",
-                                        "mrn" to "Maranao",
-                                        "tl" to "Tagalog"
-                                    )
-                                    
-                                    dialects.forEach { dialect ->
-                                        Button(
-                                            onClick = {
-                                                viewModel.setDialect(dialect.first)
-                                                showDialog = false
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(vertical = 4.dp),
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = if (selectedDialect == dialect.first) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
-                                                contentColor = if (selectedDialect == dialect.first) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        ) {
-                                            Text(
-                                                text = dialect.second,
-                                                style = MaterialTheme.typography.bodyLarge,
-                                                modifier = Modifier.fillMaxWidth()
-                                            )
-                                        }
-                                    }
-                                }
-                            },
-                            confirmButton = {
-                                TextButton(
-                                    onClick = { showDialog = false }
-                                ) {
-                                    Text("Cancel")
-                                }
-                            }
-                        )
-                    }
-                    
-                    // Clear History button
-                    Button(
-                        onClick = {
-                            // Clear history
-                            viewModel.clearSentenceHistory()
-                            viewModel.updateRecognizedText("")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError
-                        )
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear")
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Clear History",
-                                maxLines = 1,
-                                softWrap = false
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }
 
-
-@Composable
-fun CameraPreviewWithLandmarks(
-    isRecording: Boolean,
-    isFrontCamera: Boolean,
-    landmarks: List<LandmarkPoint>,
-    onImageCaptured: (ImageProxy) -> Unit,
-    onCameraSwitch: () -> Unit
-) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val coroutineScope = rememberCoroutineScope()
-    var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
-    
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(4f/3f) // Standard camera aspect ratio to match camera output
-            .padding(16.dp)
-    ) {
-        AndroidView(
-            factory = { ctx ->
-                val previewView = PreviewView(ctx)
-                // Fix 3: Explicitly set PreviewView scale type
-                previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
-                previewView
-            },
-            update = { previewView ->
-                val executor = ContextCompat.getMainExecutor(previewView.context)
-                
-                // Function to bind camera with current settings
-                fun bindCamera() {
-                    cameraProvider?.let { provider ->
-                        // Select camera based on state
-                        val cameraSelector = if (isFrontCamera) {
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        } else {
-                            CameraSelector.DEFAULT_BACK_CAMERA
-                        }
-                        
-                                        // Configure preview with explicit 1:1 aspect ratio
-                        val preview = androidx.camera.core.Preview.Builder()
-                            .setTargetResolution(android.util.Size(640, 480)) // Standard 4:3 resolution to match preview aspect ratio
-                            .build()
-                        
-                        // Set proper target rotation to match device orientation
-                        preview.setTargetRotation(previewView.display.rotation)
-                        
-                        preview.setSurfaceProvider(previewView.surfaceProvider)
-                        
-                        // Configure image analysis use case for processing frames
-                        val imageAnalyzer = ImageAnalysis.Builder()
-                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                            .build()
-                        
-                        imageAnalyzer.setAnalyzer(executor) { image ->
-                            onImageCaptured(image)
-                        }
-                        
-                        try {
-                            // Unbind use cases before rebinding
-                            provider.unbindAll()
-                            
-                            // Bind use cases to camera
-                            provider.bindToLifecycle(
-                                lifecycleOwner, cameraSelector, preview, imageAnalyzer
-                            )
-                        } catch (exc: Exception) {
-                            Log.e("CameraPreview", "Camera binding error", exc)
-                        }
-                    }
-                }
-                
-                // Initialize camera provider if not already done
-                if (cameraProvider == null) {
-                    val cameraProviderFuture = ProcessCameraProvider.getInstance(previewView.context)
-                    cameraProviderFuture.addListener({
-                        cameraProvider = cameraProviderFuture.get()
-                        bindCamera() // Bind camera with initial settings
-                    }, executor)
-                } else {
-                    // Re-bind camera with new settings when isFrontCamera changes
-                    bindCamera()
-                }
-            },
-            modifier = Modifier.matchParentSize() // Fix 2: Ensure the preview matches parent size
-        )
-        
-        // Overlay for drawing hand landmarks - matches parent size to align with preview
-        // HandLandmarkOverlay(landmarks = landmarks, isFrontCamera = isFrontCamera) // Removed visual overlays as requested
-        
-        // Camera switch button - positioned at the bottom center
-        Button(
-            onClick = onCameraSwitch,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
-                .size(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black.copy(alpha = 0.7f),
-                contentColor = Color.White
-            ),
-            contentPadding = PaddingValues(0.dp),
-            shape = CircleShape
-        ) {
-            Icon(
-                imageVector = if (isFrontCamera) Icons.Default.CameraFront else Icons.Default.CameraRear,
-                contentDescription = if (isFrontCamera) "Switch to back camera" else "Switch to front camera",
-                modifier = Modifier.size(32.dp)
-            )
-        }
-        
-        // Recording indicator
-        if (isRecording) {
-            Box(
-                modifier = Modifier
-                    .size(16.dp)
-                    .align(Alignment.TopEnd)
-                    .background(Color.Red, CircleShape)
-            )
-        }
-    }
-}
-
-/**
- * Overlay composable for drawing hand landmarks
- * Currently renders nothing as visual overlays have been removed
- */
-@Composable
-fun HandLandmarkOverlay(
-    landmarks: List<LandmarkPoint> = emptyList(),
-    isFrontCamera: Boolean = false
-) {
-    // This composable exists to maintain compatibility but renders nothing
-    // Visual overlays have been removed as requested
-}

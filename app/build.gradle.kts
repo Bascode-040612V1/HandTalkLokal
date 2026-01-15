@@ -77,6 +77,9 @@ dependencies {
     // MediaPipe Tasks Vision
     implementation("com.google.mediapipe:tasks-vision:0.10.14")
     
+    // Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
