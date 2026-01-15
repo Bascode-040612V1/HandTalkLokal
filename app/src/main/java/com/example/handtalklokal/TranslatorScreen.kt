@@ -91,34 +91,26 @@ fun SignLanguageTranslatorScreenWithFeatures(
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Modern title at the top of the screen
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(28.dp),
-                title = { 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.TopStart
-                    ) {
-                        Text(
-                            text = "Sign Language Translator",
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                lineHeight = 28.sp
-                            ),
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+            ) {
+                Text(
+                    text = "Sign Language Translator",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.align(Alignment.Center)
                 )
-            )
-        }
-
-    ) { innerPadding ->
+            }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -131,19 +123,19 @@ fun SignLanguageTranslatorScreenWithFeatures(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 8.dp)
-                    .padding(bottom = 8.dp),
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
-                // Camera Preview Container with flexible aspect ratio
+                // Camera Preview Container with 1:1 aspect ratio
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .aspectRatio(1f) // Square 1:1 aspect ratio
+                        .padding(16.dp)
                 ) {
                     // Declare camera provider state outside AndroidView
                     var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
@@ -168,9 +160,10 @@ fun SignLanguageTranslatorScreenWithFeatures(
                                             CameraSelector.DEFAULT_BACK_CAMERA
                                         }
                                         
-                                        // Configure preview with flexible resolution
+                                        // Configure preview with square resolution
                                         val preview = androidx.camera.core.Preview.Builder()
-                                            .build() // Let CameraX choose appropriate resolution for flexible aspect ratio
+                                            .setTargetResolution(android.util.Size(480, 480)) // Square resolution for 1:1 aspect ratio
+                                            .build()
                                         
                                         
                                         // Set proper target rotation to match device orientation
@@ -296,17 +289,71 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
-            // Dialect selector button - positioned below camera preview, aligned to right
-            Row(
+            
+            // Current Phrase and Sentence History
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.End
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    // Removed Current Phrase box as requested
+                    // Only showing Completed Sentences box
+                    
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                    ) {
+                        items(sentenceHistory.reversed()) { sentence ->  // Show in reverse order (newest first)
+                            // The sentence is already translated in the ViewModel, so display as-is
+                            Text(
+                                text = sentence,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(vertical = 2.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Combined button row - Clear Sentence and Select Dialect side by side (now below sentence history)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Clear Sentence button - positioned to the left, wraps content
+                Button(
+                    onClick = { viewModel.clearSentenceHistory() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    )
+                ) {
+                    Text(
+                        text = "Clear Sentence",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+                
+                // Select Dialect button - positioned to the right, fills remaining space
                 Button(
                     onClick = { showDialog = true },
-                    modifier = Modifier.fillMaxWidth(0.5f), // Half the width
+                    modifier = Modifier.weight(1f), // Take remaining space
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary
@@ -327,23 +374,6 @@ fun SignLanguageTranslatorScreenWithFeatures(
                         )
                     }
                 }
-            }
-            
-            // Clear Sentence button - positioned between dialect selector and sentence history
-            Button(
-                onClick = { viewModel.clearSentenceHistory() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Text(
-                    text = "Clear Sentence",
-                    style = MaterialTheme.typography.labelLarge
-                )
             }
             
             // Dialect Selection Dialog

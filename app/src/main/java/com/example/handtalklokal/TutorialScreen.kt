@@ -29,32 +29,7 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
     var currentLessonIndex by remember { mutableStateOf(0) }
     
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(28.dp),
-                title = { 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.TopStart
-                    ) {
-                        Text(
-                            text = "Hand Sign Tutorials",
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                lineHeight = 28.sp
-                            ),
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
-        }
+        modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         if (selectedCategory == null) {
             // Category Selection  Screen
