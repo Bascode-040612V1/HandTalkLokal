@@ -34,14 +34,20 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
             TopAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .height(28.dp),
                 title = { 
-                    Text(
-                        text = "Hand Sign Tutorials",
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            lineHeight = 28.sp
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Text(
+                            text = "Hand Sign Tutorials",
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                lineHeight = 28.sp
+                            ),
+                            modifier = Modifier.padding(top = 2.dp)
                         )
-                    ) 
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,

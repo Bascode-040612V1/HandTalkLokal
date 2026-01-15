@@ -65,7 +65,6 @@ import java.util.*
 fun getDialectName(code: String): String {
     return when (code) {
         "tl" -> "Tagalog"
-        "fil" -> "Filipino"  // Include Filipino as an alias for Tagalog
         "hil" -> "Hiligaynon"
         "ceb" -> "Cebuano"
         "mrn" -> "Maranao"
@@ -97,14 +96,20 @@ fun SignLanguageTranslatorScreenWithFeatures(
             TopAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .height(28.dp),
                 title = { 
-                    Text(
-                        text = "Sign Language Translator",
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            lineHeight = 28.sp
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Text(
+                            text = "Sign Language Translator",
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                lineHeight = 28.sp
+                            ),
+                            modifier = Modifier.padding(top = 2.dp)
                         )
-                    ) 
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -126,19 +131,19 @@ fun SignLanguageTranslatorScreenWithFeatures(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
+                    .padding(bottom = 8.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
-                // Camera Preview Container with 1:1 aspect ratio
+                // Camera Preview Container with flexible aspect ratio
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f) // Square 1:1 aspect ratio
-                        .padding(16.dp)
+                        .fillMaxSize()
+                        .padding(8.dp)
                 ) {
                     // Declare camera provider state outside AndroidView
                     var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
@@ -163,10 +168,10 @@ fun SignLanguageTranslatorScreenWithFeatures(
                                             CameraSelector.DEFAULT_BACK_CAMERA
                                         }
                                         
-                                        // Configure preview with square resolution
+                                        // Configure preview with flexible resolution
                                         val preview = androidx.camera.core.Preview.Builder()
-                                            .setTargetResolution(android.util.Size(480, 480)) // Square resolution for 1:1
-                                            .build()
+                                            .build() // Let CameraX choose appropriate resolution for flexible aspect ratio
+                                        
                                         
                                         // Set proper target rotation to match device orientation
                                         preview.setTargetRotation(previewView.display.rotation)
@@ -296,7 +301,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
@@ -324,6 +329,23 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
+            // Clear Sentence button - positioned between dialect selector and sentence history
+            Button(
+                onClick = { viewModel.clearSentenceHistory() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Text(
+                    text = "Clear Sentence",
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            
             // Dialect Selection Dialog
             if (showDialog) {
                 AlertDialog(
@@ -338,7 +360,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            items(listOf("tl", "fil", "hil", "ceb", "mrn")) { dialectCode ->
+                            items(listOf("tl", "hil", "ceb", "mrn")) { dialectCode ->
                                 TextButton(
                                     onClick = {
                                         viewModel.setDialect(dialectCode)
