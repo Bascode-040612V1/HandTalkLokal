@@ -93,11 +93,6 @@ fun SignLanguageTranslatorScreenWithFeatures(
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
             // Modern title at the top of the screen
             Box(
                 modifier = Modifier
@@ -111,6 +106,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+        
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -376,83 +372,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
-            // Dialect Selection Dialog
-            if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDialog = false },
-                    title = {
-                        Text(
-                            text = "Select Dialect",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                    },
-                    text = {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            items(listOf("tl", "hil", "ceb", "mrn")) { dialectCode ->
-                                TextButton(
-                                    onClick = {
-                                        viewModel.setDialect(dialectCode)
-                                        showDialog = false
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = getDialectName(dialectCode),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
-                            }
-                        }
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = { showDialog = false }
-                        ) {
-                            Text("Cancel")
-                        }
-                    }
-                )
-            }
-            
-            // Current Phrase and Sentence History
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    // Removed Current Phrase box as requested
-                    // Only showing Completed Sentences box
-                    
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                    ) {
-                        items(sentenceHistory.reversed()) { sentence ->  // Show in reverse order (newest first)
-                            // The sentence is already translated in the ViewModel, so display as-is
-                            Text(
-                                text = sentence,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(vertical = 2.dp)
-                            )
-                        }
-                    }
-                }
-            }
+
             
         }
     }

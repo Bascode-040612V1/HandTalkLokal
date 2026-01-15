@@ -31,24 +31,44 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        if (selectedCategory == null) {
-            // Category Selection  Screen
-            CategorySelectionScreen(
-                modifier = Modifier.padding(innerPadding),
-                onCategorySelected = { category -> 
-                    selectedCategory = category
-                    currentLessonIndex = 0
-                }
-            )
-        } else {
-            // Lesson Screen
-            LessonScreen(
-                modifier = Modifier.padding(innerPadding),
-                category = selectedCategory!!,
-                lessonIndex = currentLessonIndex,
-                onNavigateToLesson = { index -> currentLessonIndex = index },
-                totalLessons = getLessonsForCategory(selectedCategory!!).size
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Modern title at the top of the screen
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+            ) {
+                Text(
+                    text = "Hand Sign Tutorials",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            
+            if (selectedCategory == null) {
+                // Category Selection  Screen
+                CategorySelectionScreen(
+                    modifier = Modifier,
+                    onCategorySelected = { category -> 
+                        selectedCategory = category
+                        currentLessonIndex = 0
+                    }
+                )
+            } else {
+                // Lesson Screen
+                LessonScreen(
+                    modifier = Modifier,
+                    category = selectedCategory!!, 
+                    lessonIndex = currentLessonIndex,
+                    onNavigateToLesson = { index -> currentLessonIndex = index },
+                    totalLessons = getLessonsForCategory(selectedCategory!!).size
+                )
+            }
         }
     }
 }

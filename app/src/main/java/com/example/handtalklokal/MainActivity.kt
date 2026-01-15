@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package com.example.handtalklokal
 
 import android.os.Bundle
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +28,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.handtalklokal.ui.theme.HandTalkLokalTheme
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.animation.ExperimentalAnimationApi
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,18 +85,49 @@ fun BottomNavigationBar(navController: NavHostController) {
         items.forEach { item ->
             NavigationBarItem(
                 icon = {
-                    if (item.route == currentRoute) {
-                        // Active tab - show text label
-                        Text(
-                            text = item.label,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    } else {
-                        // Inactive tab - show icon only
-                        Icon(
-                            imageVector = item.icon,
-                            contentDescription = item.label
-                        )
+                    // Animate the transition between icon and text
+                    AnimatedContent(
+                        targetState = item.route == currentRoute,
+                        transitionSpec = {
+                            // Define the animation based on the state change
+                            if (targetState) {
+                                // Going from inactive (icon) to active (text) - text slides up
+                                slideInVertically(
+                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
+                                ) { height -> height } +
+                                fadeIn(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)) with
+                                slideOutVertically(
+                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
+                                ) { height -> -height / 2 } +
+                                fadeOut(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing))
+                            } else {
+                                // Going from active (text) to inactive (icon) - icon slides down
+                                slideInVertically(
+                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
+                                ) { height -> -height / 2 } +
+                                fadeIn(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)) with
+                                slideOutVertically(
+                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
+                                ) { height -> height } +
+                                fadeOut(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing))
+                            }
+                        },
+                        label = "Icon/Text Transition"
+                    ) { isActive ->
+                        if (isActive) {
+                            // Active tab - show text label
+                            Text(
+                                text = item.label,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontSize = 12.sp
+                            )
+                        } else {
+                            // Inactive tab - show icon
+                            Icon(
+                                imageVector = item.icon,
+                                contentDescription = item.label
+                            )
+                        }
                     }
                 },
                 label = null, // We handle labels manually in icon composable
