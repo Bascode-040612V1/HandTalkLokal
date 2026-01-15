@@ -97,13 +97,13 @@ fun SignLanguageTranslatorScreenWithFeatures(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Sign Language Translator",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.align(Alignment.Center)
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         
@@ -119,7 +119,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp)
                     .padding(bottom = 16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(
@@ -245,7 +245,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
+                                    .padding(start = 16.dp, end = 16.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
@@ -290,7 +290,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp)
                     .padding(bottom = 8.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(
@@ -327,29 +327,34 @@ fun SignLanguageTranslatorScreenWithFeatures(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Clear Sentence button - positioned to the left, wraps content
-                Button(
-                    onClick = { viewModel.clearSentenceHistory() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    )
+                // Clear Sentence button - wrapped in Box to prevent compression
+                Box(
+                    modifier = Modifier.defaultMinSize(minWidth = 100.dp)
                 ) {
-                    Text(
-                        text = "Clear Sentence",
-                        style = MaterialTheme.typography.labelLarge
-                    )
+                    Button(
+                        onClick = { viewModel.clearSentenceHistory() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        )
+                    ) {
+                        Text(
+                            text = "Clear Sentence",
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
                 }
                 
-                // Select Dialect button - positioned to the right, fills remaining space
+                // Select Dialect button - takes remaining space
                 Button(
                     onClick = { showDialog = true },
-                    modifier = Modifier.weight(1f), // Take remaining space
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary

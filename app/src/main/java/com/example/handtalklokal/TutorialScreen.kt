@@ -40,13 +40,14 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .wrapContentHeight()
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Hand Sign Tutorials",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.align(Alignment.Center)
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
             
@@ -263,7 +264,7 @@ fun LessonScreen(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
@@ -298,7 +299,7 @@ fun LessonScreen(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                 ) {
                     Text(
                         text = "Next",
