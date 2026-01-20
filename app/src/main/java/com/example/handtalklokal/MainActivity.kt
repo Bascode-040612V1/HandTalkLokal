@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -65,8 +67,6 @@ fun HandTalkApp() {
     }
 }
 
-
-
 // Bottom Navigation Bar
 
 data class BottomNavItem(val route: String, val icon: ImageVector, val label: String)
@@ -81,79 +81,99 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     
-    NavigationBar {
-        items.forEach { item ->
-            NavigationBarItem(
-                icon = {
+    // Custom Navigation Bar implementation
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 3.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items.forEach { item ->
+                val isSelected = item.route == currentRoute
+                
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                        .padding(vertical = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     // Animate the transition between icon and text
                     AnimatedContent(
-                        targetState = item.route == currentRoute,
+                        targetState = isSelected,
                         transitionSpec = {
-                            // Define the animation based on the state change
                             if (targetState) {
-                                // Going from inactive (icon) to active (text) - text slides up
-                                slideInVertically(
-                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
-                                ) { height -> height } +
-                                fadeIn(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)) with
-                                slideOutVertically(
-                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
-                                ) { height -> -height / 2 } +
-                                fadeOut(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing))
+                                (slideInVertically(
+                                    animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
+                                ) { height -> height * 3 } + fadeIn(
+                                    animationSpec = tween(durationMillis = 400, delayMillis = 200)
+                                )) with
+                                (slideOutVertically(
+                                    animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
+                                ) { height -> -height * 3 } + fadeOut(
+                                    animationSpec = tween(durationMillis = 400)
+                                ))
                             } else {
-                                // Going from active (text) to inactive (icon) - icon slides down
-                                slideInVertically(
-                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
-                                ) { height -> -height / 2 } +
-                                fadeIn(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)) with
-                                slideOutVertically(
-                                    animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing)
-                                ) { height -> height } +
-                                fadeOut(animationSpec = tween(durationMillis = 350, easing = LinearOutSlowInEasing))
+                                (slideInVertically(
+                                    animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
+                                ) { height -> -height * 3 } + fadeIn(
+                                    animationSpec = tween(durationMillis = 400, delayMillis = 200)
+                                )) with
+                                (slideOutVertically(
+                                    animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
+                                ) { height -> height * 3 } + fadeOut(
+                                    animationSpec = tween(durationMillis = 400)
+                                ))
                             }
                         },
                         label = "Icon/Text Transition"
                     ) { isActive ->
                         if (isActive) {
-                            // Active tab - show text label
                             Text(
                                 text = item.label,
                                 style = MaterialTheme.typography.labelMedium,
-                                fontSize = 12.sp
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         } else {
-                            // Inactive tab - show icon
                             Icon(
                                 imageVector = item.icon,
-                                contentDescription = item.label
+                                contentDescription = item.label,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }
-                },
-                label = null, // We handle labels manually in icon composable
-                selected = item.route == currentRoute,
-                onClick = {
-                    navController.navigate(item.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
-                        launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
-                        restoreState = true
+                    
+                    // Blue underline indicator
+                    if (isSelected) {
+                        Spacer(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .width(40.dp)
+                                .height(3.dp)
+                                .background(MaterialTheme.colorScheme.primary)
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.height(11.dp))
                     }
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            )
+                }
+            }
         }
     }
 }

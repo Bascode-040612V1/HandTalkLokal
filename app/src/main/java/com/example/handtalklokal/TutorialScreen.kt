@@ -29,30 +29,61 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
     var currentLessonIndex by remember { mutableStateOf(0) }
     
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            // Add top app bar with back button when in lesson view
+            if (selectedCategory != null) {
+                TopAppBar(
+                    title = { 
+                        Text(
+                            text = selectedCategory!!,
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { 
+                            selectedCategory = null
+                            currentLessonIndex = 0
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back to categories"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Modern title at the top of the screen
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Hand Sign Tutorials",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+            // Only show main title when not in a specific category
+            if (selectedCategory == null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Hand Sign Tutorials",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
             
             if (selectedCategory == null) {
-                // Category Selection  Screen
+                // Category Selection Screen
                 CategorySelectionScreen(
                     modifier = Modifier,
                     onCategorySelected = { category -> 
@@ -67,7 +98,11 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
                     category = selectedCategory!!, 
                     lessonIndex = currentLessonIndex,
                     onNavigateToLesson = { index -> currentLessonIndex = index },
-                    totalLessons = getLessonsForCategory(selectedCategory!!).size
+                    totalLessons = getLessonsForCategory(selectedCategory!!).size,
+                    onBackToCategories = {
+                        selectedCategory = null
+                        currentLessonIndex = 0
+                    }
                 )
             }
         }
@@ -80,11 +115,11 @@ fun CategorySelectionScreen(
     onCategorySelected: (String) -> Unit
 ) {
     val categories = listOf(
-        "Alphabet" to "Learn the alphabet in sign language",
-        "Common Words" to "Essential words for daily communication",
-        "Basic Phrases" to "Useful phrases for conversations",
-        "Emotions" to "Express feelings through signs",
-        "Numbers" to "Counting and mathematical signs"
+        "Alphabet",
+        "Common Words",
+        "Basic Phrases",
+        "Emotions",
+        "Numbers"
     )
     
     Column(
@@ -109,7 +144,7 @@ fun CategorySelectionScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onCategorySelected(category.first) },
+                        .clickable { onCategorySelected(category) },
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
@@ -122,7 +157,7 @@ fun CategorySelectionScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = getCategoryIcon(category.first),
+                            imageVector = getCategoryIcon(category),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
@@ -130,18 +165,11 @@ fun CategorySelectionScreen(
                                 .padding(end = 16.dp)
                         )
                         
-                        Column {
-                            Text(
-                                text = category.first,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = category.second,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                        Text(
+                            text = category,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             }
@@ -155,7 +183,8 @@ fun LessonScreen(
     category: String,
     lessonIndex: Int,
     onNavigateToLesson: (Int) -> Unit,
-    totalLessons: Int
+    totalLessons: Int,
+    onBackToCategories: () -> Unit
 ) {
     val lessons = getLessonsForCategory(category)
     val currentLesson = lessons.getOrNull(lessonIndex)
@@ -173,6 +202,10 @@ fun LessonScreen(
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.primary
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onBackToCategories) {
+                Text("Back to Categories")
+            }
         }
         return
     }
@@ -184,7 +217,7 @@ fun LessonScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "$category - Lesson ${lessonIndex + 1}",
+            text = "Lesson ${lessonIndex + 1}",
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
@@ -250,32 +283,60 @@ fun LessonScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(
-                onClick = { 
-                    if (lessonIndex > 0) {
-                        onNavigateToLesson(lessonIndex - 1)
-                    }
-                },
-                enabled = lessonIndex > 0,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+            // Back to categories button (replaces previous button when at first lesson)
+            if (lessonIndex == 0) {
+                Button(
+                    onClick = onBackToCategories,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    )
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
-                        contentDescription = "Previous"
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Back to categories"
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Categories",
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
+                }
+            } else {
+                // Previous lesson button
+                Button(
+                    onClick = { 
+                        if (lessonIndex > 0) {
+                            onNavigateToLesson(lessonIndex - 1)
+                        }
+                    },
+                    enabled = lessonIndex > 0,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Previous",
-                        maxLines = 1,
-                        softWrap = false
-                    )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Previous"
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Previous",
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
                 }
             }
             

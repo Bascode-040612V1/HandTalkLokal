@@ -17,6 +17,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -62,6 +63,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 import java.util.*
 
+// Updated dialect mapping excluding English and Filipino
 fun getDialectName(code: String): String {
     return when (code) {
         "tl" -> "Tagalog"
@@ -71,6 +73,13 @@ fun getDialectName(code: String): String {
         else -> "Tagalog"  // Default to Tagalog
     }
 }
+
+// Dialect data class for the selection dialog
+data class DialectOption(
+    val code: String,
+    val name: String,
+    val displayName: String
+)
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -90,194 +99,250 @@ fun SignLanguageTranslatorScreenWithFeatures(
     val listState = rememberLazyListState()
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     
+    // Declare showDialog state at the composable level so it's accessible to both content and buttons
+    var showDialog by remember { mutableStateOf(false) }
+    
+    // Define available dialects for the selection dialog (excluding English and Filipino)
+    val dialectOptions = listOf(
+        DialectOption("tl", "Tagalog", "Tagalog"),
+        DialectOption("hil", "Hiligaynon", "Hiligaynon"),
+        DialectOption("ceb", "Cebuano", "Cebuano"),
+        DialectOption("mrn", "Maranao", "Maranao")
+    )
+    
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-            // Modern title at the top of the screen
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Sign Language Translator",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        
-        Column(
+        // Wrap entire content in a Box to allow absolute positioning of buttons
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Declare showDialog state at column level for accessibility
-            var showDialog by remember { mutableStateOf(false) }
-            
-            // Camera Preview
-            Card(
+            // Title and main content column
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp)
-                    .padding(bottom = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    .fillMaxSize()
             ) {
-                // Camera Preview Container with 1:1 aspect ratio
+                // Modern title at the top of the screen
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f) // Square 1:1 aspect ratio
-                        .padding(16.dp)
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    // Declare camera provider state outside AndroidView
-                    var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
-                    val executor = remember { ContextCompat.getMainExecutor(context) }
+                    Text(
+                        text = "Sign Language Translator",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            
+                // Main content column that can scroll if needed
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
                     
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        // Direct Camera Preview - no wrapper boxes
-                        AndroidView(
-                            factory = { ctx ->
-                                val previewView = PreviewView(ctx)
-                                previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
-                                previewView
-                            },
-                            update = { previewView ->
-                                // Function to bind camera with current settings
-                                fun bindCamera() {
-                                    cameraProvider?.let { provider ->
-                                        // Select camera based on state
-                                        val cameraSelector = if (isFrontCamera) {
-                                            CameraSelector.DEFAULT_FRONT_CAMERA
+                    // Camera Preview
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp)
+                            .padding(bottom = 16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        )
+                    ) {
+                        // Camera Preview Container with 1:1 aspect ratio
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f) // Square 1:1 aspect ratio
+                                .padding(16.dp)
+                        ) {
+                            // Declare camera provider state outside AndroidView
+                            var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
+                            val executor = remember { ContextCompat.getMainExecutor(context) }
+                            
+                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                                // Direct Camera Preview - no wrapper boxes
+                                AndroidView(
+                                    factory = { ctx ->
+                                        val previewView = PreviewView(ctx)
+                                        previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
+                                        previewView
+                                    },
+                                    update = { previewView ->
+                                        // Function to bind camera with current settings
+                                        fun bindCamera() {
+                                            cameraProvider?.let { provider ->
+                                                // Select camera based on state
+                                                val cameraSelector = if (isFrontCamera) {
+                                                    CameraSelector.DEFAULT_FRONT_CAMERA
+                                                } else {
+                                                    CameraSelector.DEFAULT_BACK_CAMERA
+                                                }
+                                                
+                                                // Configure preview with square resolution
+                                                val preview = androidx.camera.core.Preview.Builder()
+                                                    .setTargetResolution(android.util.Size(480, 480)) // Square resolution for 1:1 aspect ratio
+                                                    .build()
+                                                
+                                                
+                                                // Set proper target rotation to match device orientation
+                                                preview.setTargetRotation(previewView.display.rotation)
+                                                preview.setSurfaceProvider(previewView.surfaceProvider)
+                                                
+                                                // Configure image analysis use case for processing frames
+                                                val imageAnalyzer = ImageAnalysis.Builder()
+                                                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                                                    .build()
+                                                
+                                                imageAnalyzer.setAnalyzer(executor) { image ->
+                                                    viewModel.processImage(image)
+                                                }
+                                                
+                                                try {
+                                                    // Unbind use cases before rebinding
+                                                    provider.unbindAll()
+                                                    
+                                                    // Bind use cases to camera
+                                                    provider.bindToLifecycle(
+                                                        lifecycleOwner, cameraSelector, preview, imageAnalyzer
+                                                    )
+                                                } catch (exc: Exception) {
+                                                    Log.e("CameraPreview", "Camera binding error", exc)
+                                                }
+                                            }
+                                        }
+                                        
+                                        // Initialize camera provider if not already done
+                                        if (cameraProvider == null) {
+                                            val cameraProviderFuture = ProcessCameraProvider.getInstance(previewView.context)
+                                            cameraProviderFuture.addListener({
+                                                cameraProvider = cameraProviderFuture.get()
+                                                bindCamera() // Bind camera with initial settings
+                                            }, executor)
                                         } else {
-                                            CameraSelector.DEFAULT_BACK_CAMERA
+                                            // Re-bind camera with new settings when isFrontCamera changes
+                                            bindCamera()
                                         }
+                                    },
+                                    modifier = Modifier.fillMaxWidth().aspectRatio(1f) // Constrain to 1:1 visible area
+                                )
+                                
+                                // Camera switch button - positioned at the bottom center
+                                Button(
+                                    onClick = { viewModel.switchCamera() },
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .padding(16.dp)
+                                        .size(56.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Black.copy(alpha = 0.7f),
+                                        contentColor = Color.White
+                                    ),
+                                    contentPadding = PaddingValues(0.dp),
+                                    shape = CircleShape
+                                ) {
+                                    Icon(
+                                        imageVector = if (isFrontCamera) Icons.Default.CameraFront else Icons.Default.CameraRear,
+                                        contentDescription = if (isFrontCamera) "Switch to back camera" else "Switch to front camera",
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                }
+                                
+                                // Recording indicator
+                                Box(
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .align(Alignment.TopEnd)
+                                        .background(Color.Red, CircleShape)
+                                )
+                            } else {
+                                // Permission denied UI
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 16.dp, end = 16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.VideocamOff,
+                                            contentDescription = "Camera off",
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(48.dp)
+                                        )
                                         
-                                        // Configure preview with square resolution
-                                        val preview = androidx.camera.core.Preview.Builder()
-                                            .setTargetResolution(android.util.Size(480, 480)) // Square resolution for 1:1 aspect ratio
-                                            .build()
+                                        Text(
+                                            text = "Camera permission required",
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                                        )
                                         
+                                        Text(
+                                            text = "Please grant camera permission to use the sign language translator",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.padding(bottom = 16.dp)
+                                        )
                                         
-                                        // Set proper target rotation to match device orientation
-                                        preview.setTargetRotation(previewView.display.rotation)
-                                        preview.setSurfaceProvider(previewView.surfaceProvider)
-                                        
-                                        // Configure image analysis use case for processing frames
-                                        val imageAnalyzer = ImageAnalysis.Builder()
-                                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                                            .build()
-                                        
-                                        imageAnalyzer.setAnalyzer(executor) { image ->
-                                            viewModel.processImage(image)
-                                        }
-                                        
-                                        try {
-                                            // Unbind use cases before rebinding
-                                            provider.unbindAll()
-                                            
-                                            // Bind use cases to camera
-                                            provider.bindToLifecycle(
-                                                lifecycleOwner, cameraSelector, preview, imageAnalyzer
+                                        Button(
+                                            onClick = { cameraPermissionState.launchPermissionRequest() },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.primary,
+                                                contentColor = MaterialTheme.colorScheme.onPrimary
                                             )
-                                        } catch (exc: Exception) {
-                                            Log.e("CameraPreview", "Camera binding error", exc)
+                                        ) {
+                                            Text("Grant Camera Permission")
                                         }
                                     }
                                 }
-                                
-                                // Initialize camera provider if not already done
-                                if (cameraProvider == null) {
-                                    val cameraProviderFuture = ProcessCameraProvider.getInstance(previewView.context)
-                                    cameraProviderFuture.addListener({
-                                        cameraProvider = cameraProviderFuture.get()
-                                        bindCamera() // Bind camera with initial settings
-                                    }, executor)
-                                } else {
-                                    // Re-bind camera with new settings when isFrontCamera changes
-                                    bindCamera()
-                                }
-                            },
-                            modifier = Modifier.fillMaxSize() // Fill the 1:1 container
+                            }
+                        }
+                    }
+                    
+                    // Current Phrase and Sentence History
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp)
+                            .padding(bottom = 8.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
                         )
-                        
-                        // Camera switch button - positioned at the bottom center
-                        Button(
-                            onClick = { viewModel.switchCamera() },
+                    ) {
+                        Column(
                             modifier = Modifier
-                                .align(Alignment.BottomCenter)
+                                .fillMaxWidth()
                                 .padding(16.dp)
-                                .size(56.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Black.copy(alpha = 0.7f),
-                                contentColor = Color.White
-                            ),
-                            contentPadding = PaddingValues(0.dp),
-                            shape = CircleShape
                         ) {
-                            Icon(
-                                imageVector = if (isFrontCamera) Icons.Default.CameraFront else Icons.Default.CameraRear,
-                                contentDescription = if (isFrontCamera) "Switch to back camera" else "Switch to front camera",
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                        
-// Dialect selector button moved below camera preview
-                        
-                        // Recording indicator
-                        if (true) { // Always show recording indicator since camera is always active
-                            Box(
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .align(Alignment.TopEnd)
-                                    .background(Color.Red, CircleShape)
-                            )
-                        }
-                    } else {
-                        // Permission denied UI
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
+                            // Removed Current Phrase box as requested
+                            // Only showing Completed Sentences box
+                            
+                            LazyColumn(
+                                state = listState,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 16.dp, end = 16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                                    .height(75.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.VideocamOff,
-                                    contentDescription = "Camera off",
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(48.dp)
-                                )
-                                
-                                Text(
-                                    text = "Camera permission required",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
-                                )
-                                
-                                Text(
-                                    text = "Please grant camera permission to use the sign language translator",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(bottom = 16.dp)
-                                )
-                                
-                                Button(
-                                    onClick = { cameraPermissionState.launchPermissionRequest() },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        contentColor = MaterialTheme.colorScheme.onPrimary
+                                items(sentenceHistory.reversed()) { sentence ->  // Show in reverse order (newest first)
+                                    // The sentence is already translated in the ViewModel, so display as-is
+                                    Text(
+                                        text = sentence,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        modifier = Modifier.padding(vertical = 2.dp)
                                     )
-                                ) {
-                                    Text("Grant Camera Permission")
                                 }
                             }
                         }
@@ -285,47 +350,10 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
-            
-            // Current Phrase and Sentence History
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp)
-                    .padding(bottom = 8.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    // Removed Current Phrase box as requested
-                    // Only showing Completed Sentences box
-                    
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                    ) {
-                        items(sentenceHistory.reversed()) { sentence ->  // Show in reverse order (newest first)
-                            // The sentence is already translated in the ViewModel, so display as-is
-                            Text(
-                                text = sentence,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(vertical = 2.dp)
-                            )
-                        }
-                    }
-                }
-            }
-            
-            // Combined button row - Clear Sentence and Select Dialect side by side (now below sentence history)
+            // Fixed button row at the bottom of the screen, above the navigation bar
             Row(
                 modifier = Modifier
+                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -377,8 +405,79 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 }
             }
             
-
-            
+            // Dialect Selection Dialog
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = {
+                        Text(
+                            text = "Select Dialect",
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
+                    text = {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(dialectOptions) { dialect ->
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { 
+                                            viewModel.setDialect(dialect.code)
+                                            showDialog = false
+                                        },
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = if (selectedDialect == dialect.code) {
+                                            MaterialTheme.colorScheme.primaryContainer
+                                        } else {
+                                            MaterialTheme.colorScheme.surface
+                                        }
+                                    )
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        RadioButton(
+                                            selected = selectedDialect == dialect.code,
+                                            onClick = { 
+                                                viewModel.setDialect(dialect.code)
+                                                showDialog = false
+                                            },
+                                            colors = RadioButtonDefaults.colors(
+                                                selectedColor = MaterialTheme.colorScheme.primary,
+                                                unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text(
+                                            text = dialect.displayName,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = if (selectedDialect == dialect.code) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.onSurface
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = { showDialog = false }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
         }
     }
 }
