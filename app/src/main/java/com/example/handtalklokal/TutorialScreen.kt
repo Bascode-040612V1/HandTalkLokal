@@ -5,14 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Mood
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,89 +21,97 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
+    val viewModel: TranslatorViewModel = viewModel()
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var currentLessonIndex by remember { mutableStateOf(0) }
     
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            // Add top app bar with back button when in lesson view
-            if (selectedCategory != null) {
-                TopAppBar(
-                    title = { 
-                        Text(
-                            text = selectedCategory!!,
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { 
-                            selectedCategory = null
-                            currentLessonIndex = 0
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back to categories"
+    // Tutorial state
+    val showTutorial by viewModel.showTutorial.collectAsState()
+    val currentTutorialStep by viewModel.currentTutorialStep.collectAsState()
+    
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                // Add top app bar with back button when in lesson view
+                if (selectedCategory != null) {
+                    TopAppBar(
+                        title = { 
+                            Text(
+                                text = selectedCategory!!,
+                                style = MaterialTheme.typography.headlineSmall
                             )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                        navigationIconContentColor = MaterialTheme.colorScheme.primary
-                    )
-                )
-            }
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            // Only show main title when not in a specific category
-            if (selectedCategory == null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Hand Sign Tutorials",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { 
+                                selectedCategory = null
+                                currentLessonIndex = 0
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = "Back to categories"
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            titleContentColor = MaterialTheme.colorScheme.primary,
+                            navigationIconContentColor = MaterialTheme.colorScheme.primary
+                        )
                     )
                 }
             }
-            
-            if (selectedCategory == null) {
-                // Category Selection Screen
-                CategorySelectionScreen(
-                    modifier = Modifier,
-                    onCategorySelected = { category -> 
-                        selectedCategory = category
-                        currentLessonIndex = 0
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                // Only show main title when not in a specific category
+                if (selectedCategory == null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Hand Sign Tutorials",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
-                )
-            } else {
-                // Lesson Screen
-                LessonScreen(
-                    modifier = Modifier,
-                    category = selectedCategory!!, 
-                    lessonIndex = currentLessonIndex,
-                    onNavigateToLesson = { index -> currentLessonIndex = index },
-                    totalLessons = getLessonsForCategory(selectedCategory!!).size,
-                    onBackToCategories = {
-                        selectedCategory = null
-                        currentLessonIndex = 0
-                    }
-                )
+                }
+                
+                if (selectedCategory == null) {
+                    // Category Selection Screen
+                    CategorySelectionScreen(
+                        modifier = Modifier,
+                        onCategorySelected = { category -> 
+                            selectedCategory = category
+                            currentLessonIndex = 0
+                        }
+                    )
+                } else {
+                    // Lesson Screen
+                    LessonScreen(
+                        modifier = Modifier,
+                        category = selectedCategory!!, 
+                        lessonIndex = currentLessonIndex,
+                        onNavigateToLesson = { index -> currentLessonIndex = index },
+                        totalLessons = getLessonsForCategory(selectedCategory!!).size,
+                        onBackToCategories = {
+                            selectedCategory = null
+                            currentLessonIndex = 0
+                        }
+                    )
+                }
             }
         }
     }
@@ -257,20 +265,17 @@ fun LessonScreen(
                 containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = currentLesson.title,
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                
-                Text(
-                    text = currentLesson.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -297,7 +302,7 @@ fun LessonScreen(
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack, 
                             contentDescription = "Back to categories"
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -327,7 +332,7 @@ fun LessonScreen(
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack, 
                             contentDescription = "Previous"
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -369,7 +374,7 @@ fun LessonScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
-                        imageVector = Icons.Filled.ArrowForward, 
+                        imageVector = Icons.AutoMirrored.Default.ArrowForward, 
                         contentDescription = "Next"
                     )
                 }
@@ -380,79 +385,36 @@ fun LessonScreen(
 }
 
 data class Lesson(
-    val title: String,
-    val description: String
+    val title: String
 )
 
 fun getLessonsForCategory(category: String): List<Lesson> {
     return when (category) {
         "Alphabet" -> listOf(
-            Lesson(
-                title = "Letter A",
-                description = "Form the letter A by making a fist with your thumb resting against your palm. Extend your index and middle fingers straight up, keeping them close together."
-            ),
-            Lesson(
-                title = "Letter B",
-                description = "Form the letter B by extending all four fingers straight up while tucking your thumb across your palm."
-            ),
-            Lesson(
-                title = "Letter C",
-                description = "Form the letter C by curving all your fingers and thumb to create a 'C' shape."
-            )
+            Lesson(title = "Letter A"),
+            Lesson(title = "Letter B"),
+            Lesson(title = "Letter C")
         )
         "Common Words" -> listOf(
-            Lesson(
-                title = "Hello",
-                description = "Extend your fingers and cross your thumb over your palm. Starting with your hand in a fist, extend your fingers and twist your hand forward twice."
-            ),
-            Lesson(
-                title = "Thank You",
-                description = "Place your fingertips on your chin and move your hand forward and slightly down, as if offering something."
-            ),
-            Lesson(
-                title = "Please",
-                description = "Place your flat hand over your chest and move it in a circular motion."
-            )
+            Lesson(title = "Hello"),
+            Lesson(title = "Thank You"),
+            Lesson(title = "Please")
         )
         "Basic Phrases" -> listOf(
-            Lesson(
-                title = "How Are You?",
-                description = "Combine the signs for 'How' and 'You' with appropriate facial expressions."
-            ),
-            Lesson(
-                title = "My Name Is",
-                description = "Point to yourself, then spell out your name using the alphabet signs."
-            )
+            Lesson(title = "How Are You?"),
+            Lesson(title = "My Name Is")
         )
         "Emotions" -> listOf(
-            Lesson(
-                title = "Happy",
-                description = "Place both hands on your chest with palms facing you, then lift them up and away from your body while opening your hands."
-            ),
-            Lesson(
-                title = "Sad",
-                description = "Place both hands on your cheeks with fingers pointing down, then pull your hands down while frowning."
-            )
+            Lesson(title = "Happy"),
+            Lesson(title = "Sad")
         )
         "Numbers" -> listOf(
-            Lesson(
-                title = "Number 1",
-                description = "Extend just your index finger while keeping the rest of your fingers in a fist."
-            ),
-            Lesson(
-                title = "Number 2",
-                description = "Extend your index and middle fingers while keeping the rest in a fist."
-            ),
-            Lesson(
-                title = "Number 3",
-                description = "Extend your index, middle, and ring fingers while keeping the rest in a fist."
-            )
+            Lesson(title = "Number 1"),
+            Lesson(title = "Number 2"),
+            Lesson(title = "Number 3")
         )
         else -> listOf(
-            Lesson(
-                title = "Default Lesson",
-                description = "This is a default lesson description."
-            )
+            Lesson(title = "Default Lesson")
         )
     }
 }
@@ -460,10 +422,10 @@ fun getLessonsForCategory(category: String): List<Lesson> {
 fun getCategoryIcon(category: String): androidx.compose.ui.graphics.vector.ImageVector {
     return when (category) {
         "Alphabet" -> Icons.Filled.Menu
-        "Common Words" -> Icons.AutoMirrored.Filled.Chat
+        "Common Words" -> Icons.AutoMirrored.Default.Chat
         "Basic Phrases" -> Icons.Filled.QuestionMark
         "Emotions" -> Icons.Filled.Mood
         "Numbers" -> Icons.Filled.FormatListNumbered
-        else -> Icons.Filled.List
+        else -> Icons.AutoMirrored.Default.List
     }
 }

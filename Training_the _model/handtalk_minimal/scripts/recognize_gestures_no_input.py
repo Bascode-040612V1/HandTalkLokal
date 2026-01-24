@@ -11,6 +11,9 @@ import os
 from datetime import datetime
 
 # Import logging configuration
+import sys
+# Add parent directory to path to find logging_config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from logging_config import setup_logging, get_logger
 
 # Import modules needed for training

@@ -47,7 +47,7 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     background = BackgroundBlue,
     onBackground = OnSurfaceBlue,
-    surface = Color.White,
+    surface = Color(0xFFF5F7FA), // Modern light gray surface instead of pure white
     onSurface = OnSurfaceBlue,
     surfaceVariant = Color(0xFFDDE3EA),
     onSurfaceVariant = Color(0xFF41484D),
@@ -60,7 +60,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun HandTalkLokalTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false, // Always use light theme regardless of system setting
     // Dynamic color is available on Android 12+
     // Disabled dynamic color to ensure consistent blue theme
     dynamicColor: Boolean = false,

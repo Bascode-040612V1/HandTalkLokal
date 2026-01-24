@@ -9,14 +9,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.Mood
+import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +44,7 @@ import com.example.handtalklokal.ui.theme.HandTalkLokalTheme
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.animation.ExperimentalAnimationApi
+import com.example.handtalklokal.components.TutorialOverlay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +61,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HandTalkApp() {
     val navController = rememberNavController()
+    val viewModel: TranslatorViewModel = viewModel()
+    
+    // Removed automatic tutorial start - tutorial will be shown based on completion state
+    // LaunchedEffect(Unit) {
+    //     viewModel.startTutorial()
+    // }
     
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { 
+            BottomNavigationBar(
+                navController = navController,
+                viewModel = viewModel
+            ) 
+        }
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -59,10 +82,13 @@ fun HandTalkApp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("translator") { 
-                val viewModel: TranslatorViewModel = viewModel()
                 SignLanguageTranslatorScreenWithFeatures(navController, viewModel) 
             }
-            composable("tutorials") { HandSignTutorialsScreenWithFeatures(navController) }
+            composable("tutorials") { 
+                // Navigate to the actual tutorial screen implementation
+                // The actual implementation is in TutorialScreen.kt
+                HandSignTutorialsScreenWithFeatures(navController)
+            }
         }
     }
 }
@@ -72,20 +98,37 @@ fun HandTalkApp() {
 data class BottomNavItem(val route: String, val icon: ImageVector, val label: String)
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
+fun BottomNavigationBar(
+    navController: NavHostController,
+    viewModel: TranslatorViewModel
+) {
     val items = listOf(
         BottomNavItem("translator", Icons.Default.Translate, "Translator"),
-        BottomNavItem("tutorials", Icons.Default.MenuBook, "Tutorial")
+        BottomNavItem("tutorials", Icons.AutoMirrored.Default.MenuBook, "Tutorial")
     )
     
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     
+    // Tutorial state to access within the composable
+    val showTutorial by viewModel.showTutorial.collectAsState()
+    val currentTutorialStep by viewModel.currentTutorialStep.collectAsState()
+    
     // Custom Navigation Bar implementation
     Surface(
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 3.dp,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                // Capture bottom navigation bounds for tutorial
+                if (showTutorial) {
+                    viewModel.updateTutorialTargetBounds(
+                        TutorialTarget.BOTTOM_NAV,
+                        coordinates.boundsInRoot()
+                    )
+                }
+            }
     ) {
         Row(
             modifier = Modifier
@@ -102,12 +145,18 @@ fun BottomNavigationBar(navController: NavHostController) {
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                            if (showTutorial && currentTutorialStep == 6) {
+                                // In tutorial mode on step 6, clicking navigation finishes the tutorial
+                                viewModel.finishTutorial()
+                            } else {
+                                // Normal navigation behavior outside tutorial
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
                         }
                         .padding(vertical = 12.dp),
@@ -120,23 +169,23 @@ fun BottomNavigationBar(navController: NavHostController) {
                             if (targetState) {
                                 (slideInVertically(
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
-                                ) { height -> height * 3 } + fadeIn(
+                                ) + fadeIn(
                                     animationSpec = tween(durationMillis = 400, delayMillis = 200)
-                                )) with
+                                )) togetherWith
                                 (slideOutVertically(
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
-                                ) { height -> -height * 3 } + fadeOut(
+                                ) + fadeOut(
                                     animationSpec = tween(durationMillis = 400)
                                 ))
                             } else {
                                 (slideInVertically(
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
-                                ) { height -> -height * 3 } + fadeIn(
+                                ) + fadeIn(
                                     animationSpec = tween(durationMillis = 400, delayMillis = 200)
-                                )) with
+                                )) togetherWith
                                 (slideOutVertically(
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
-                                ) { height -> height * 3 } + fadeOut(
+                                ) + fadeOut(
                                     animationSpec = tween(durationMillis = 400)
                                 ))
                             }
@@ -189,7 +238,7 @@ fun SignLanguageTranslatorScreen(navController: NavHostController) {
                 title = { Text("Sign Language Translator") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -212,46 +261,6 @@ fun SignLanguageTranslatorScreen(navController: NavHostController) {
             
             Text(
                 text = "This feature will use your camera to recognize hand signs and convert them to speech.",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HandSignTutorialsScreen(navController: NavHostController) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text("Hand Sign Tutorials") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Basic Hand Sign Tutorials",
-                style = MaterialTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-            
-            Text(
-                text = "Learn basic hand signs through interactive tutorials.",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )

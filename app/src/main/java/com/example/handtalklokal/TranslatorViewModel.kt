@@ -1,14 +1,18 @@
 package com.example.handtalklokal
 
 import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
+import android.media.AudioManager
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import androidx.camera.core.ImageProxy
+import androidx.compose.ui.geometry.Rect
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.handtalklokal.data.SentenceRepository
+import com.example.handtalklokal.data.TutorialRepository
 import com.example.handtalklokal.ImageUtils
 import com.example.handtalklokal.RecognitionResult
 import kotlinx.coroutines.*
@@ -28,6 +32,17 @@ import java.util.concurrent.ConcurrentLinkedQueue
 // Data class to hold landmark information for drawing
 data class LandmarkPoint(val x: Float, val y: Float, val type: String = "hand", val handIndex: Int = -1)
 
+// Enum for tutorial targets
+enum class TutorialTarget {
+    CAMERA_PERMISSION_BUTTON,
+    CAMERA_PREVIEW,
+    SENTENCE_OUTPUT,
+    DIALECT_BUTTON,
+    CLEAR_BUTTON,
+    BOTTOM_NAV,
+    MODAL_DIALOG
+}
+
 class TranslatorViewModel(application: Application) : AndroidViewModel(application) {
     
     companion object {
@@ -38,6 +53,7 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
     }
     
     private val repository = SentenceRepository(application)
+    private val tutorialRepository = TutorialRepository(application)
     private val gestureRecognitionHelper = GestureRecognitionHelper(application)
     private val mediaPipeHelper = MediaPipeHelper(application)
     
@@ -103,8 +119,42 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
     // Current line for sentence building
     private var currentLine = ""
     
+    // Flag to track if we're waiting for a gesture during tutorial step 1
+    private val _waitForGestureInTutorial = MutableStateFlow(false)
+    val waitForGestureInTutorial: StateFlow<Boolean> = _waitForGestureInTutorial.asStateFlow()
+
+    // Tutorial state
+    private val _isTutorialCompleted = MutableStateFlow(false)
+    val isTutorialCompleted: StateFlow<Boolean> = _isTutorialCompleted.asStateFlow()
+
+    private val _currentTutorialStep = MutableStateFlow(0)  // 0 is the first tutorial step
+    val currentTutorialStep: StateFlow<Int> = _currentTutorialStep.asStateFlow()
+
+    private val _showTutorial = MutableStateFlow(false)
+    val showTutorial: StateFlow<Boolean> = _showTutorial.asStateFlow()
+
+    // Tutorial target bounds storage
+    private val _tutorialTargetBounds = MutableStateFlow<Map<TutorialTarget, Rect>>(emptyMap())
+    val tutorialTargetBounds: StateFlow<Map<TutorialTarget, Rect>> = _tutorialTargetBounds.asStateFlow()
+    
     init {
         initializeTextToSpeech()
+        initializeTutorialState()
+    }
+
+    private fun initializeTutorialState() {
+        viewModelScope.launch {
+            tutorialRepository.isTutorialCompleted.collect { completed ->
+                _isTutorialCompleted.value = completed
+                // Add a small delay before showing tutorial to ensure UI is laid out
+                if (!completed) {
+                    launch {
+                        delay(500) // Wait 500ms for UI to settle
+                        _showTutorial.value = true
+                    }
+                }
+            }
+        }
     }
     
     private fun initializeTextToSpeech() {
@@ -150,6 +200,13 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
             viewModelScope.launch {
                 repository.addSentence(sentence.trim())
                 Log.d("TranslationDebug", "Sentence added to repository: ${sentence.trim()}")
+                
+                // Check if we're in tutorial step 1 (camera preview) and waiting for gesture
+                if (_currentTutorialStep.value == 1 && _waitForGestureInTutorial.value && _showTutorial.value) {
+                    // Stop monitoring and advance tutorial
+                    _waitForGestureInTutorial.value = false
+                    nextTutorialStep()
+                }
             }
         } else {
             Log.d("TranslationDebug", "addToSentenceHistory called with blank sentence, skipping")
@@ -557,6 +614,124 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
             "tl", "fil", "hil", "ceb", "mrn" -> Locale("fil", "PH")  // Use Filipino locale for all Philippine languages
             else -> Locale("fil", "PH")  // Default to Filipino/Tagalog
         }
+    }
+    
+    // Tutorial bounds management
+    fun updateTutorialTargetBounds(target: TutorialTarget, bounds: Rect) {
+        val currentBounds = _tutorialTargetBounds.value.toMutableMap()
+        currentBounds[target] = bounds
+        _tutorialTargetBounds.value = currentBounds
+        Log.d("TutorialBounds", "Updated bounds for $target: $bounds")
+    }
+    
+    fun getTutorialTargetBounds(target: TutorialTarget): Rect? {
+        return _tutorialTargetBounds.value[target]
+    }
+    
+    fun startTutorial() {
+        if (!_isTutorialCompleted.value) {
+            viewModelScope.launch {
+                delay(500) // Wait for UI to be laid out
+                _currentTutorialStep.value = 0  // Start with step 0
+                _showTutorial.value = true
+            }
+        }
+    }
+    
+    fun startTutorialFromStep1() {
+        viewModelScope.launch {
+            // Reset tutorial completion status to allow restarting
+            tutorialRepository.setTutorialCompleted(false)
+            _isTutorialCompleted.value = false
+            
+            delay(500) // Wait for UI to be laid out
+            _currentTutorialStep.value = 1  // Start with step 1 (camera preview)
+            _showTutorial.value = true
+        }
+    }
+
+    fun nextTutorialStep() {
+        val currentStep = _currentTutorialStep.value
+        val nextStep = currentStep + 1
+        
+        // Stop gesture monitoring if we're leaving step 1
+        if (currentStep == 1) {
+            _waitForGestureInTutorial.value = false
+        }
+        
+        // Define max step (7 for our 8-step tutorial)
+        if (nextStep <= 7) {
+            _currentTutorialStep.value = nextStep
+        } else {
+            finishTutorial()
+        }
+    }
+
+    fun setCurrentTutorialStep(step: Int) {
+        if (step >= 0 && step <= 7 && !_isTutorialCompleted.value) {
+            // Stop gesture monitoring if we're leaving step 1
+            if (_currentTutorialStep.value == 1) {
+                _waitForGestureInTutorial.value = false
+            }
+            _currentTutorialStep.value = step
+            
+            // Start gesture monitoring if we're entering step 1
+            if (step == 1 && _showTutorial.value) {
+                _waitForGestureInTutorial.value = true
+            }
+        }
+    }
+
+    fun finishTutorial() {
+        _showTutorial.value = false
+        _currentTutorialStep.value = 0
+        _waitForGestureInTutorial.value = false  // Stop gesture monitoring
+        viewModelScope.launch {
+            tutorialRepository.setTutorialCompleted(true)
+            _isTutorialCompleted.value = true
+        }
+    }
+
+    fun resetTutorial() {
+        _showTutorial.value = true
+        _currentTutorialStep.value = 0
+        viewModelScope.launch {
+            tutorialRepository.setTutorialCompleted(false)
+            _isTutorialCompleted.value = false
+        }
+    }
+    
+    fun onCameraPermissionGranted() {
+        // When camera permission is granted, advance the tutorial if we're on step 0
+        if (_currentTutorialStep.value == 0 && _showTutorial.value) {
+            nextTutorialStep()
+        }
+    }
+    
+    fun increaseVolume() {
+        try {
+            val audioManager = getApplication<Application>().getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            
+            // Get current volume and max volume for music stream
+            val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+            val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+            
+            // Increase volume by 20% if not already at max
+            if (currentVolume < maxVolume) {
+                val newVolume = minOf(maxVolume, currentVolume + (maxVolume * 0.2).toInt())
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_SHOW_UI)
+            }
+        } catch (e: Exception) {
+            Log.e("VolumeControl", "Error setting volume", e)
+        }
+    }
+    
+    fun startGestureMonitoringForTutorial() {
+        _waitForGestureInTutorial.value = true
+    }
+    
+    fun stopGestureMonitoringForTutorial() {
+        _waitForGestureInTutorial.value = false
     }
     
     override fun onCleared() {

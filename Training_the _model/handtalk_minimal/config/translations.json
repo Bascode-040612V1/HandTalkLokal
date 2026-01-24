@@ -1,0 +1,106 @@
+{
+  "Hello": {
+    "en": "Hello",
+    "tl": "Kumusta",
+    "fil": "Kumusta",
+    "hil": "Kamusta",
+    "ceb": "Kumusta",
+    "mrn": "Assalamu Alaikum"
+  },
+  "Hi": {
+    "en": "Hi",
+    "tl": "Kamusta",
+    "fil": "Kumusta",
+    "hil": "Kamusta",
+    "ceb": "Kumusta",
+    "mrn": "Assalamu"
+  },
+  "Morning": {
+    "en": "Morning",
+    "tl": "Agahan",
+    "fil": "Agahan",
+    "hil": "Agahon",
+    "ceb": "Mading",
+    "mrn": "Mading"
+  },
+  "Noon": {
+    "en": "Noon",
+    "tl": "Tanghali",
+    "fil": "Tanghali",
+    "hil": "Tanghali",
+    "ceb": "Tanghali",
+    "mrn": "Tanghali"
+  },
+  "Afternoon": {
+    "en": "Afternoon",
+    "tl": "Hapon",
+    "fil": "Hapon",
+    "hil": "Hapon",
+    "ceb": "Hapon",
+    "mrn": "Hapon"
+  },
+  "Bye": {
+    "en": "Bye",
+    "tl": "Paalam",
+    "fil": "Paalam",
+    "hil": "Palay",
+    "ceb": "Abay",
+    "mrn": "Alay"
+  },
+  "Thank you": {
+    "en": "Thank you",
+    "tl": "Salamat",
+    "fil": "Salamat",
+    "hil": "Salamat",
+    "ceb": "Salamat",
+    "mrn": "Salamat"
+  },
+  "Good": {
+    "en": "Good",
+    "tl": "Maganda",
+    "fil": "Maganda",
+    "hil": "Maayong",
+    "ceb": "Maayo",
+    "mrn": "Tambay"
+  },
+  "Soon": {
+    "en": "Soon",
+    "tl": "Sa lalong madaling panahon",
+    "fil": "Sa lalong madaling panahon", 
+    "hil": "Dayon",
+    "ceb": "Dayon",
+    "mrn": "Agto"
+  },
+  "See": {
+    "en": "See",
+    "tl": "Kita",
+    "fil": "Kita",
+    "hil": "Kita",
+    "ceb": "Kita",
+    "mrn": "Say"
+  },
+  "Welcome": {
+    "en": "Welcome",
+    "tl": "Maligayang pagdating",
+    "fil": "Maligayang pagdating",
+    "hil": "Malipayon nga pag-abot",
+    "ceb": "Maayong pag-abot",
+    "mrn": "Tara"
+  },
+  "You": {
+    "en": "You",
+    "tl": "Ikaw",
+    "fil": "Ikaw",
+    "hil": "Ikaw",
+    "ceb": "Ikaw",
+    "mrn": "Sikaw"
+  },
+  "Please": {
+    "en": "Please",
+    "tl": "Paki",
+    "fil": "Paki",
+    "hil": "Paki",
+    "ceb": "Paki",
+    "mrn": "Paki"
+  }
+}

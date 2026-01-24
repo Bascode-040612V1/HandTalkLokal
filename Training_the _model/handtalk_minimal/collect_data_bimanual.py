@@ -21,6 +21,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
+# Import gesture registry
+from gesture_registry import add_gesture_to_registry
+
 # Suppress protobuf deprecation warnings
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning, module='google.protobuf.symbol_database')
@@ -126,6 +129,32 @@ def train_model_automatically():
         log_error(error_msg)
         print(f"❌ {error_msg}")
 
+def get_next_sequence_number(gesture_name):
+    """Get the next available sequence number for a given gesture across all dates"""
+    import glob
+    import re
+    
+    # Look for all files with this gesture name regardless of date
+    pattern = f"data/arm_hand_sequences/gesture_{gesture_name}_seq_*.json"
+    existing_files = glob.glob(pattern)
+    
+    if not existing_files:
+        return 1  # First sequence for this gesture
+    
+    # Extract sequence numbers from filenames
+    sequence_numbers = []
+    for file in existing_files:
+        # Use regex to extract the sequence number (3 digits after 'seq_')
+        match = re.search(r'_seq_(\d{3})_', os.path.basename(file))
+        if match:
+            sequence_numbers.append(int(match.group(1)))
+    
+    if sequence_numbers:
+        return max(sequence_numbers) + 1
+    else:
+        return 1
+
+
 def save_motion_sequence(gesture_name, motion_data):
     """Save hand motion sequence as JSON file"""
     try:
@@ -134,25 +163,9 @@ def save_motion_sequence(gesture_name, motion_data):
         
         # Generate filename with timestamp and sequence number
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        sequence_number = 1
         
-        # Check for existing files with the same gesture name to determine sequence number
-        import glob
-        existing_files = glob.glob(f"data/arm_hand_sequences/gesture_{gesture_name}_seq_*_{timestamp[:8]}*.json")
-        if existing_files:
-            # Extract sequence numbers and find the highest
-            seq_numbers = []
-            for file in existing_files:
-                try:
-                    # Extract sequence number from filename
-                    parts = os.path.basename(file).split('_')
-                    if len(parts) >= 4:
-                        seq_num = int(parts[3])
-                        seq_numbers.append(seq_num)
-                except:
-                    pass
-            if seq_numbers:
-                sequence_number = max(seq_numbers) + 1
+        # Get the next available sequence number for this gesture across all dates
+        sequence_number = get_next_sequence_number(gesture_name)
         
         # Format sequence number with leading zeros
         seq_num_formatted = f"{sequence_number:03d}"
@@ -167,7 +180,8 @@ def save_motion_sequence(gesture_name, motion_data):
                 "timestamp": timestamp,
                 "sequence_number": sequence_number,
                 "frame_count": len(motion_data),
-                "features_per_frame": len(motion_data[0]) if motion_data else 0
+                "features_per_frame": len(motion_data[0]) if motion_data else 0,
+                "collection_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             },
             "frames": motion_data,
             "feature_names": []
@@ -193,6 +207,20 @@ def save_motion_sequence(gesture_name, motion_data):
         with open(filename, 'w') as f:
             json.dump(motion_json, f, indent=2)
         
+        # Register the gesture in the registry
+        try:
+            add_gesture_to_registry(
+                gesture_name=gesture_name,
+                file_path=filename,
+                sequence_number=sequence_number,
+                frame_count=len(motion_data),
+                collection_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            )
+            print(f"📋 Registered gesture '{gesture_name}' in registry")
+        except Exception as e:
+            log_error(f"Error registering gesture in registry: {str(e)}")
+            print(f"❌ Error registering gesture in registry: {str(e)}")
+        
         log_info(f"Saved motion sequence to {filename}")
         print(f"💾 Saved motion sequence to {filename}")
         return filename
@@ -201,6 +229,32 @@ def save_motion_sequence(gesture_name, motion_data):
         log_error(f"Error saving motion sequence: {str(e)}")
         print(f"❌ Error saving motion sequence: {str(e)}")
         return None
+
+def normalize_landmarks(landmark_list):
+    """Normalize landmarks relative to wrist and scale by hand size to make gestures location/scale invariant"""
+    if not landmark_list or len(landmark_list) < 10:  # Need at least wrist and middle finger base
+        return None
+    
+    # Use the wrist (index 0) as the origin
+    base_x = landmark_list[0].x
+    base_y = landmark_list[0].y
+    base_z = landmark_list[0].z
+    
+    # Calculate hand scale (distance from wrist to middle finger base)
+    # This prevents the "sticky" issue when moving closer/further from camera
+    import math
+    dist = math.sqrt((landmark_list[9].x - base_x)**2 + (landmark_list[9].y - base_y)**2)
+    if dist == 0: 
+        dist = 1  # Prevent divide by zero
+    
+    normalized = []
+    for lm in landmark_list:
+        normalized.extend([
+            (lm.x - base_x) / dist,
+            (lm.y - base_y) / dist,
+            (lm.z - base_z) / dist
+        ])
+    return normalized
 
 # --- SETTINGS ---
 gesture_label = input("Enter gesture label for both hands: ")
@@ -400,10 +454,17 @@ try:
                 multi_hand_landmarks = getattr(hand_results, 'multi_hand_landmarks', None)
                 if multi_hand_landmarks:
                     for hand_landmarks in multi_hand_landmarks:
-                        # Extract raw hand landmark coordinates (no smoothing)
+                        # Extract raw hand landmark coordinates
                         landmarks = getattr(hand_landmarks, 'landmark', [])
-                        for lm in landmarks:
-                            frame_data += [lm.x, lm.y, lm.z]
+                        
+                        # Apply relative scaling normalization
+                        normalized_landmarks = normalize_landmarks(landmarks)
+                        if normalized_landmarks:
+                            frame_data += normalized_landmarks
+                        else:
+                            # Fallback to raw coordinates if normalization fails
+                            for lm in landmarks:
+                                frame_data += [lm.x, lm.y, lm.z]
                     # If only one hand is detected, we still need to pad the data
                     if len(multi_hand_landmarks) == 1:
                         # Add zero padding for the missing hand

@@ -14,3 +14,18 @@
 2025-12-14 15:54:40,960 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
 2025-12-14 15:54:40,960 - HandTalk - INFO - Automatic bimanual training completed successfully!
 2025-12-14 15:54:50,572 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-21 17:56:38,838 - HandTalk - INFO - Test log message after consolidation
+2026-01-21 17:56:38,838 - HandTalk - ERROR - Test error after consolidation
+2026-01-21 17:59:47,382 - HandTalk - INFO - Data loaded: 400 samples with 138 features each
+2026-01-21 17:59:47,382 - HandTalk - INFO - Expected features: 138 (126 hand + 12 pose landmarks)
+2026-01-21 17:59:47,382 - HandTalk - INFO - Labels: ['Thank you', 'Afternoon', 'Good', 'Soon', 'See', 'Hello', 'You', 'Noon', 'Welcome', 'Morning', 'Bye', 'Please', 'Hi']
+2026-01-21 17:59:47,382 - HandTalk - INFO - Number of unique labels: 13
+2026-01-21 18:01:04,675 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-21 18:01:51,295 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-21 18:01:51,295 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-21 18:01:51,295 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-21 18:01:53,582 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-21 18:06:53,470 - HandTalk - INFO - Data loaded: 400 samples with 138 features each
+2026-01-21 18:06:53,470 - HandTalk - INFO - Expected features: 138 (126 hand + 12 pose landmarks)
+2026-01-21 18:06:53,470 - HandTalk - INFO - Labels: ['Welcome', 'Thank you', 'You', 'Please', 'Afternoon', 'Soon', 'Morning', 'Bye', 'Noon', 'See', 'Hi', 'Good', 'Hello']
+2026-01-21 18:06:53,481 - HandTalk - INFO - Number of unique labels: 13

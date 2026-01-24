@@ -1,13 +1,27 @@
 """
 Script to retrain the gesture recognition model with current data
 """
+import sys
+import os
+# Add parent directory to path to find logging_config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Import logging configuration
+from logging_config import setup_logging, get_logger
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
-import os
+
+# Set up logging
+logger = setup_logging()
+log_info = logger.info
+log_error = logger.error
+log_debug = logger.debug
+log_warning = logger.warning
 
 def load_and_prepare_data(csv_path="data/gestures_bimanual.csv"):
     """Load and prepare the bimanual gesture data for training"""
@@ -22,11 +36,22 @@ def load_and_prepare_data(csv_path="data/gestures_bimanual.csv"):
         X = df.drop('label', axis=1).values  # Convert to numpy array
         y = df['label'].values  # Convert to numpy array
         
-        print(f"Data loaded: {X.shape[0]} samples with {X.shape[1]} features each")
-        print(f"Expected features: 138 (126 hand + 12 pose landmarks)")  # Updated from 144 to 138
+        data_msg = f"Data loaded: {X.shape[0]} samples with {X.shape[1]} features each"
+        print(data_msg)
+        log_info(data_msg)
+        
+        expected_msg = f"Expected features: 138 (126 hand + 12 pose landmarks)"  # Updated from 144 to 138
+        print(expected_msg)
+        log_info(expected_msg)
+        
         unique_labels = list(set(y)) if len(y) > 0 else []
-        print(f"Labels: {unique_labels}")
-        print(f"Number of unique labels: {len(unique_labels)}")
+        labels_msg = f"Labels: {unique_labels}"
+        print(labels_msg)
+        log_info(labels_msg)
+        
+        num_labels_msg = f"Number of unique labels: {len(unique_labels)}"
+        print(num_labels_msg)
+        log_info(num_labels_msg)
         
         return X, y
     except Exception as e:

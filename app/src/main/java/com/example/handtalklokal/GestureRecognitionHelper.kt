@@ -2,8 +2,8 @@ package com.example.handtalklokal
 
 import android.content.Context
 import android.util.Log
-import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
+import org.tensorflow.lite.Interpreter
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -34,6 +34,8 @@ class GestureRecognitionHelper(private val context: Context) {
             labels = loadLabels()
             
             Log.d("GestureRecognition", "Model and labels loaded successfully")
+            Log.d("GestureRecognition", "Labels order: $labels")
+            Log.d("GestureRecognition", "Model output shape: ${interpreter?.getOutputTensor(0)?.shape()?.joinToString(", ")}")
         } catch (e: Exception) {
             Log.e("GestureRecognition", "Error loading model or labels", e)
         }
@@ -87,9 +89,18 @@ class GestureRecognitionHelper(private val context: Context) {
                 inputBuffer.putFloat(feature)
             }
             
-            // Prepare output buffer based on model output shape
-            val outputShape = interpreter?.getOutputTensor(0)?.shape() ?: intArrayOf(1, 8)
-            val outputBuffer = Array(1) { FloatArray(outputShape[1]) }
+            // Get the model's actual output shape to determine how many classes it was trained on
+            val modelOutputShape = interpreter?.getOutputTensor(0)?.shape()
+            val modelNumClasses = if (modelOutputShape != null && modelOutputShape.size > 1) {
+                modelOutputShape[1] // Second dimension is number of classes
+            } else {
+                8 // Default fallback
+            }
+            
+            Log.d("GestureRecognition", "Model expects $modelNumClasses output classes, we have ${labels.size} labels")
+            
+            // Prepare output buffer based on model's expected output size, not label size
+            val outputBuffer = Array(1) { FloatArray(modelNumClasses) }
             
             // Run inference
             interpreter?.run(inputBuffer, outputBuffer)
@@ -99,14 +110,17 @@ class GestureRecognitionHelper(private val context: Context) {
             var maxProb = -1.0f
             var maxIndex = -1
             
+            Log.d("GestureRecognition", "Model output probabilities:")
             for (i in probabilities.indices) {
-                if (probabilities[i] > maxProb) {
+                val labelForIndex = if (i < labels.size) labels[i] else "UNKNOWN_INDEX_$i"
+                Log.d("GestureRecognition", "  Index $i ($labelForIndex): ${probabilities[i]}")
+                if (i < modelNumClasses && probabilities[i] > maxProb) {
                     maxProb = probabilities[i]
                     maxIndex = i
                 }
             }
             
-            Log.d("GestureRecognition", "Max probability: $maxProb, Index: $maxIndex, Labels size: ${labels.size}")
+            Log.d("GestureRecognition", "Max probability: $maxProb, Index: $maxIndex")
             
             // Define confidence thresholds matching Training_the_model configuration
             val highConfidenceThreshold = 0.7f
@@ -121,9 +135,11 @@ class GestureRecognitionHelper(private val context: Context) {
                     RecognitionResult(sanitizedResult, maxProb, "High")
                 }
                 maxProb >= mediumConfidenceThreshold && maxIndex >= 0 && maxIndex < labels.size -> {
-                    val result = "Unrecognized (Medium Confidence)"
-                    Log.d("GestureRecognition", "Medium confidence recognized gesture. Returning: $result")
-                    RecognitionResult(result, maxProb, "Medium")
+                    val result = labels[maxIndex]
+                    // Sanitize the result to remove any non-printable characters
+                    val sanitizedResult = result.replace(Regex("[^\\p{Print}]"), "").trim()
+                    Log.d("GestureRecognition", "Medium confidence recognized gesture: $result (sanitized to: $sanitizedResult)")
+                    RecognitionResult(sanitizedResult, maxProb, "Medium")
                 }
                 else -> {
                     Log.d("GestureRecognition", "Low confidence or invalid index. Returning Unknown")

@@ -9,6 +9,8 @@ import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import java.io.Closeable
+import kotlin.math.sqrt
+import kotlin.math.pow
 
 /**
  * MediaPipe Helper for hand and pose landmark detection
@@ -210,13 +212,43 @@ class MediaPipeHelper(context: Context) : Closeable {
         for (handIndex in 0 until minOf(2, handLandmarks.size)) {
             val landmarks = handLandmarks[handIndex]
             
-            // Each hand has 21 landmarks with x, y, z coordinates
-            for (landmarkIndex in landmarks.indices) {
-                val featureIndex = handIndex * 63 + landmarkIndex * 3 // 63 features per hand (21 landmarks × 3 coordinates)
-                if (featureIndex + 2 < features.size) {
-                    features[featureIndex] = landmarks[landmarkIndex].x()
-                    features[featureIndex + 1] = landmarks[landmarkIndex].y()
-                    features[featureIndex + 2] = landmarks[landmarkIndex].z()
+            // Get wrist landmark (index 0) to normalize all other landmarks relative to it
+            if (landmarks.isNotEmpty() && landmarks.size >= 10) { // Need at least wrist and middle finger base
+                val wrist = landmarks[0] // Landmark 0 is the wrist
+                val middleBase = landmarks[9] // Middle finger MCP (base)
+                
+                // Calculate hand scale (distance from wrist to middle finger base)
+                // This prevents the "sticky" issue when moving closer/further from camera
+                val dx = (middleBase.x() - wrist.x()).toDouble()
+                val dy = (middleBase.y() - wrist.y()).toDouble()
+                val dist = sqrt(dx * dx + dy * dy).toFloat().coerceAtLeast(0.001f) // Prevent divide by zero
+                
+                // Each hand has 21 landmarks with x, y, z coordinates
+                for (landmarkIndex in landmarks.indices) {
+                    val featureIndex = handIndex * 63 + landmarkIndex * 3 // 63 features per hand (21 landmarks × 3 coordinates)
+                    if (featureIndex + 2 < features.size) {
+                        // Normalize coordinates relative to wrist AND scale by hand size
+                        features[featureIndex] = (landmarks[landmarkIndex].x() - wrist.x()) / dist
+                        features[featureIndex + 1] = (landmarks[landmarkIndex].y() - wrist.y()) / dist
+                        features[featureIndex + 2] = (landmarks[landmarkIndex].z() - wrist.z()) / dist
+                    }
+                }
+            } else if (landmarks.isNotEmpty()) {
+                // Fallback to simple wrist normalization if we don't have enough landmarks
+                val wrist = landmarks[0] // Landmark 0 is the wrist
+                val wristX = wrist.x()
+                val wristY = wrist.y()
+                val wristZ = wrist.z()
+                
+                // Each hand has 21 landmarks with x, y, z coordinates
+                for (landmarkIndex in landmarks.indices) {
+                    val featureIndex = handIndex * 63 + landmarkIndex * 3 // 63 features per hand (21 landmarks × 3 coordinates)
+                    if (featureIndex + 2 < features.size) {
+                        // Normalize coordinates relative to wrist (as done in training)
+                        features[featureIndex] = landmarks[landmarkIndex].x() - wristX
+                        features[featureIndex + 1] = landmarks[landmarkIndex].y() - wristY
+                        features[featureIndex + 2] = landmarks[landmarkIndex].z() - wristZ
+                    }
                 }
             }
         }
@@ -238,6 +270,7 @@ class MediaPipeHelper(context: Context) : Closeable {
             if (poseLandmarks.isNotEmpty() && landmarkIndex < poseLandmarks.size) {
                 val landmark = poseLandmarks[landmarkIndex]
                 if (poseFeatureIndex + 2 < features.size) {
+                    // Use raw coordinates for pose landmarks (not normalized relative to anything)
                     features[poseFeatureIndex] = landmark.x()
                     features[poseFeatureIndex + 1] = landmark.y()
                     features[poseFeatureIndex + 2] = landmark.z()

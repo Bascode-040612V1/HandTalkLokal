@@ -7,6 +7,10 @@ import os
 import pandas as pd
 
 # Import logging configuration
+import sys
+import os
+# Add parent directory to path to find logging_config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from logging_config import setup_logging, get_logger
 
 # Set up logging
