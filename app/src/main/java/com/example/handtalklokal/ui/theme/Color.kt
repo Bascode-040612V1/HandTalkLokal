@@ -15,3 +15,8 @@ val LightBlue40 = Color(0xFF669DF6)
 val SurfaceBlue = Color(0xFFE8F0FE)
 val OnSurfaceBlue = Color(0xFF1F1F1F)
 val BackgroundBlue = Color(0xFFF8FBFF)
+
+// Gradient colors - Turquoise variations
+val Turquoise = Color(0xFF40E0D0)      // Turquoise
+val DarkBlue = Color(0xFF00008B)       // Dark Blue
+val DarkTurquoise = Color(0xFF00CED1)  // Dark Turquoise

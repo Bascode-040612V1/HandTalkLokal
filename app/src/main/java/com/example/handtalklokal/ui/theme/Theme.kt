@@ -11,6 +11,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.handtalklokal.ui.theme.GradientBackground
+import com.example.handtalklokal.ui.theme.Typography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Blue80,
@@ -45,10 +47,10 @@ private val LightColorScheme = lightColorScheme(
     onSecondaryContainer = OnSurfaceBlue,
     tertiary = LightBlue40,
     onTertiary = Color.White,
-    background = BackgroundBlue,
-    onBackground = OnSurfaceBlue,
-    surface = Color(0xFFF5F7FA), // Modern light gray surface instead of pure white
-    onSurface = OnSurfaceBlue,
+    background = Color.White,
+    onBackground = Color.Black,
+    surface = Color.White,
+    onSurface = Color.Black,
     surfaceVariant = Color(0xFFDDE3EA),
     onSurfaceVariant = Color(0xFF41484D),
     outline = Color(0xFF71787E),

@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,8 +61,8 @@ fun HandSignTutorialsScreenWithFeatures(navController: NavHostController) {
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = MaterialTheme.colorScheme.surface,
-                            titleContentColor = MaterialTheme.colorScheme.primary,
-                            navigationIconContentColor = MaterialTheme.colorScheme.primary
+                            titleContentColor = Color.Black,
+                            navigationIconContentColor = Color.Black
                         )
                     )
                 }
@@ -167,7 +168,7 @@ fun CategorySelectionScreen(
                         Icon(
                             imageVector = getCategoryIcon(category),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = Color.Black,
                             modifier = Modifier
                                 .size(48.dp)
                                 .padding(end = 16.dp)
@@ -303,7 +304,8 @@ fun LessonScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack, 
-                            contentDescription = "Back to categories"
+                            contentDescription = "Back to categories",
+                            tint = Color.Black
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
@@ -333,7 +335,8 @@ fun LessonScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack, 
-                            contentDescription = "Previous"
+                            contentDescription = "Previous",
+                            tint = Color.Black
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
@@ -375,7 +378,8 @@ fun LessonScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowForward, 
-                        contentDescription = "Next"
+                        contentDescription = "Next",
+                        tint = Color.Black
                     )
                 }
             }

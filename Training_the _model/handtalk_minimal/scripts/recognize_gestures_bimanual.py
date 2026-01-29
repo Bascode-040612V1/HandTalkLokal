@@ -248,12 +248,18 @@ def main():
                     # Make prediction
                     prediction_proba = model.predict_proba(features)[0]
                     max_proba = np.max(prediction_proba)
+                    # Get second highest probability for comparison
+                    sorted_probs = np.sort(prediction_proba)[::-1]
+                    second_proba = sorted_probs[1] if len(sorted_probs) > 1 else 0.0
                     
-                    # Define confidence thresholds
-                    high_confidence_threshold = 0.7
-                    medium_confidence_threshold = 0.4
+                    # Define confidence thresholds - using same strict criteria as Android app
+                    min_max_prob_threshold = 0.85
+                    min_difference_threshold = 0.15
                     
-                    if max_proba >= high_confidence_threshold:
+                    # Check if prediction meets both criteria: max_prob >= 0.85 AND (max_prob - second_prob) >= 0.15
+                    meets_criteria = max_proba >= min_max_prob_threshold and (max_proba - second_proba) >= min_difference_threshold
+                    
+                    if meets_criteria:
                         # High confidence - display the gesture
                         predicted_class = model.classes_[np.argmax(prediction_proba)]
                         
@@ -279,25 +285,18 @@ def main():
                                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)  # Green
                         draw_text_with_background(frame, prob_details, (10, 120),
                                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
-                    elif max_proba >= medium_confidence_threshold:
-                        # Medium confidence - show as unrecognized
-                        confidence_text = f"Confidence: {max_proba:.2f} (Medium)"
-                        display_text = "Gesture: Unrecognized (Medium Confidence)"
-                        
-                        # Draw medium confidence message
-                        draw_text_with_background(frame, display_text, (10, 30),
-                                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)  # Yellow
-                        draw_text_with_background(frame, confidence_text, (10, 60),
-                                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)  # Yellow
                     else:
-                        # Low confidence - show as unrecognized
+                        # Does not meet criteria - show as unrecognized
                         confidence_text = f"Confidence: {max_proba:.2f} (Low)"
-                        display_text = "Gesture: Unrecognized (Low Confidence)"
+                        difference_text = f"Diff: {(max_proba - second_proba):.2f}"
+                        display_text = "Gesture: Unrecognized"
                         
                         # Draw low confidence message
                         draw_text_with_background(frame, display_text, (10, 30),
                                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)  # Red
                         draw_text_with_background(frame, confidence_text, (10, 60),
+                                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)  # Red
+                        draw_text_with_background(frame, difference_text, (10, 90),
                                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)  # Red
                 except Exception as e:
                     log_error(f"Error during prediction: {str(e)}")

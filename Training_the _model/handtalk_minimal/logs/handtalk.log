@@ -1,4 +1,4 @@
-2025-12-14 15:53:17,934 - HandTalk - INFO - This is an INFO message
+ 2025-12-14 15:53:17,934 - HandTalk - INFO - This is an INFO message
 2025-12-14 15:53:17,935 - HandTalk - WARNING - This is a WARNING message
 2025-12-14 15:53:17,935 - HandTalk - ERROR - This is an ERROR message
 2025-12-14 15:54:27,714 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Good Evening' (both hands)
@@ -14,18 +14,823 @@
 2025-12-14 15:54:40,960 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
 2025-12-14 15:54:40,960 - HandTalk - INFO - Automatic bimanual training completed successfully!
 2025-12-14 15:54:50,572 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
-2026-01-21 17:56:38,838 - HandTalk - INFO - Test log message after consolidation
-2026-01-21 17:56:38,838 - HandTalk - ERROR - Test error after consolidation
-2026-01-21 17:59:47,382 - HandTalk - INFO - Data loaded: 400 samples with 138 features each
-2026-01-21 17:59:47,382 - HandTalk - INFO - Expected features: 138 (126 hand + 12 pose landmarks)
-2026-01-21 17:59:47,382 - HandTalk - INFO - Labels: ['Thank you', 'Afternoon', 'Good', 'Soon', 'See', 'Hello', 'You', 'Noon', 'Welcome', 'Morning', 'Bye', 'Please', 'Hi']
-2026-01-21 17:59:47,382 - HandTalk - INFO - Number of unique labels: 13
-2026-01-21 18:01:04,675 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
-2026-01-21 18:01:51,295 - HandTalk - INFO - Running interactive gesture viewer
-2026-01-21 18:01:51,295 - HandTalk - INFO - Starting interactive gesture viewer
-2026-01-21 18:01:51,295 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
-2026-01-21 18:01:53,582 - HandTalk - INFO - User exited interactive gesture viewer
-2026-01-21 18:06:53,470 - HandTalk - INFO - Data loaded: 400 samples with 138 features each
-2026-01-21 18:06:53,470 - HandTalk - INFO - Expected features: 138 (126 hand + 12 pose landmarks)
-2026-01-21 18:06:53,470 - HandTalk - INFO - Labels: ['Welcome', 'Thank you', 'You', 'Please', 'Afternoon', 'Soon', 'Morning', 'Bye', 'Noon', 'See', 'Hi', 'Good', 'Hello']
-2026-01-21 18:06:53,481 - HandTalk - INFO - Number of unique labels: 13
+2026-01-27 14:17:36,233 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:17:36,233 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:17:36,233 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:17:45,063 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:19:11,384 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Morning' (both hands)
+2026-01-27 14:19:11,387 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Morning' (both hands)
+2026-01-27 14:21:49,155 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Morning'
+2026-01-27 14:21:49,745 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:21:49,762 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Morning_seq_002_20260127_142149.json
+2026-01-27 14:21:49,762 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:21:49,779 - HandTalk - INFO - Bimanual data loaded: 120 samples with 138 features each
+2026-01-27 14:21:49,790 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:21:49,790 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:21:50,031 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:21:50,111 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:21:50,111 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:21:55,458 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:21:55,458 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:21:55,458 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:22:05,605 - HandTalk - INFO - User confirmed deletion of gesture: Good
+2026-01-27 14:22:05,645 - HandTalk - INFO - Deleted 40 samples for gesture 'Good'. Total samples: 120 -> 80
+2026-01-27 14:22:05,645 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 14:22:05,647 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:22:05,647 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:22:08,431 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:22:18,983 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Good' (both hands)
+2026-01-27 14:22:18,984 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Good' (both hands)
+2026-01-27 14:22:43,279 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Good'
+2026-01-27 14:22:43,762 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:22:43,791 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Good_seq_003_20260127_142243.json
+2026-01-27 14:22:43,791 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:22:43,809 - HandTalk - INFO - Bimanual data loaded: 100 samples with 138 features each
+2026-01-27 14:22:43,811 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:22:43,811 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:22:44,039 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:22:44,133 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:22:44,133 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:22:59,063 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Good' (both hands)
+2026-01-27 14:22:59,063 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Good' (both hands)
+2026-01-27 14:23:15,870 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Good'
+2026-01-27 14:23:16,312 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:23:16,326 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Good_seq_004_20260127_142316.json
+2026-01-27 14:23:16,326 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:23:16,347 - HandTalk - INFO - Bimanual data loaded: 120 samples with 138 features each
+2026-01-27 14:23:16,347 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:23:16,354 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:23:16,587 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:23:16,660 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:23:16,660 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:24:13,701 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Afternoon' (both hands)
+2026-01-27 14:24:13,701 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Afternoon' (both hands)
+2026-01-27 14:28:54,167 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Afternoon'
+2026-01-27 14:28:54,684 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:28:54,703 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Afternoon_seq_001_20260127_142854.json
+2026-01-27 14:28:54,703 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:28:54,726 - HandTalk - INFO - Bimanual data loaded: 140 samples with 138 features each
+2026-01-27 14:28:54,729 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:28:54,729 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:28:54,965 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:28:55,031 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:28:55,031 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:29:07,418 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Afternoon' (both hands)
+2026-01-27 14:29:07,418 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Afternoon' (both hands)
+2026-01-27 14:29:22,791 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Afternoon'
+2026-01-27 14:29:23,279 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:29:23,303 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Afternoon_seq_002_20260127_142923.json
+2026-01-27 14:29:23,303 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:29:23,326 - HandTalk - INFO - Bimanual data loaded: 160 samples with 138 features each
+2026-01-27 14:29:23,328 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:29:23,328 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:29:23,566 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:29:23,643 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:29:23,643 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:30:01,726 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 14:30:45,008 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:30:45,008 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:30:45,008 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:31:00,609 - HandTalk - INFO - User confirmed deletion of gesture: Hello
+2026-01-27 14:31:00,671 - HandTalk - INFO - Deleted 40 samples for gesture 'Hello'. Total samples: 160 -> 120
+2026-01-27 14:31:00,671 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 14:31:00,671 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:31:00,671 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:31:05,253 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:31:16,176 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hello' (both hands)
+2026-01-27 14:31:16,176 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hello' (both hands)
+2026-01-27 14:31:34,316 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Hello'
+2026-01-27 14:31:34,786 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:31:34,807 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Hello_seq_003_20260127_143134.json
+2026-01-27 14:31:34,807 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:31:34,823 - HandTalk - INFO - Bimanual data loaded: 140 samples with 138 features each
+2026-01-27 14:31:34,834 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:31:34,836 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:31:35,084 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:31:35,170 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:31:35,170 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:32:00,230 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hello' (both hands)
+2026-01-27 14:32:00,230 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hello' (both hands)
+2026-01-27 14:35:35,940 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Hello'
+2026-01-27 14:35:36,439 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:35:36,465 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Hello_seq_004_20260127_143536.json
+2026-01-27 14:35:36,465 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:35:36,478 - HandTalk - INFO - Bimanual data loaded: 160 samples with 138 features each
+2026-01-27 14:35:36,489 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:35:36,489 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:35:36,725 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:35:36,793 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:35:36,793 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:35:40,350 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:35:40,350 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:35:40,359 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:35:51,372 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:37:27,223 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Night' (both hands)
+2026-01-27 14:37:27,223 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Night' (both hands)
+2026-01-27 14:39:22,893 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Night'
+2026-01-27 14:39:23,363 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:39:23,391 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Night_seq_001_20260127_143923.json
+2026-01-27 14:39:23,391 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:39:23,414 - HandTalk - INFO - Bimanual data loaded: 180 samples with 138 features each
+2026-01-27 14:39:23,417 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:39:23,417 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:39:23,663 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:39:23,748 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:39:23,748 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:39:34,696 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Night' (both hands)
+2026-01-27 14:39:34,696 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Night' (both hands)
+2026-01-27 14:39:45,536 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Night'
+2026-01-27 14:39:46,037 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:39:46,062 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Night_seq_002_20260127_143946.json
+2026-01-27 14:39:46,062 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:39:46,081 - HandTalk - INFO - Bimanual data loaded: 200 samples with 138 features each
+2026-01-27 14:39:46,088 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:39:46,088 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:39:46,355 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:39:46,435 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:39:46,435 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:40:03,515 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 14:44:07,068 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:44:07,068 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:44:40,494 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'What'
+2026-01-27 14:44:40,918 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:44:40,940 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_What_seq_001_20260127_144440.json
+2026-01-27 14:44:40,940 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:44:40,965 - HandTalk - INFO - Bimanual data loaded: 220 samples with 138 features each
+2026-01-27 14:44:40,968 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:44:40,968 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:44:41,241 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:44:41,322 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:44:41,322 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:45:02,745 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:45:02,755 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:45:21,095 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'What'
+2026-01-27 14:45:22,114 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:45:22,126 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_What_seq_002_20260127_144522.json
+2026-01-27 14:45:22,133 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:45:22,155 - HandTalk - INFO - Bimanual data loaded: 240 samples with 138 features each
+2026-01-27 14:45:22,155 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:45:22,158 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:45:22,418 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:45:22,497 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:45:22,497 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:45:25,852 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:45:25,852 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:45:25,856 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:45:35,178 - HandTalk - INFO - User confirmed deletion of gesture: What
+2026-01-27 14:45:35,277 - HandTalk - INFO - Deleted 40 samples for gesture 'What'. Total samples: 240 -> 200
+2026-01-27 14:45:35,278 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 14:45:35,278 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:45:35,278 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:45:37,343 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:45:47,217 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:45:47,217 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:45:57,739 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'What'
+2026-01-27 14:45:58,257 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:45:58,288 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_What_seq_003_20260127_144558.json
+2026-01-27 14:45:58,288 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:45:58,316 - HandTalk - INFO - Bimanual data loaded: 220 samples with 138 features each
+2026-01-27 14:45:58,318 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:45:58,319 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:45:58,589 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:45:58,674 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:45:58,674 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:46:00,878 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:46:00,878 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:46:00,878 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:46:07,269 - HandTalk - INFO - User confirmed deletion of gesture: What
+2026-01-27 14:46:07,362 - HandTalk - INFO - Deleted 20 samples for gesture 'What'. Total samples: 220 -> 200
+2026-01-27 14:46:07,362 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 14:46:07,362 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:46:07,362 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:46:09,042 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:46:19,730 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:46:19,730 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:46:37,947 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'What'
+2026-01-27 14:46:38,435 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:46:38,457 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_What_seq_004_20260127_144638.json
+2026-01-27 14:46:38,457 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:46:38,479 - HandTalk - INFO - Bimanual data loaded: 220 samples with 138 features each
+2026-01-27 14:46:38,479 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:46:38,479 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:46:38,758 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:46:38,846 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:46:38,846 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:46:42,386 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:46:42,386 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:46:42,386 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:46:47,898 - HandTalk - INFO - User confirmed deletion of gesture: What
+2026-01-27 14:46:47,975 - HandTalk - INFO - Deleted 20 samples for gesture 'What'. Total samples: 220 -> 200
+2026-01-27 14:46:47,976 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 14:46:47,978 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:46:47,978 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:46:49,760 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:47:02,484 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:47:02,484 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:47:21,425 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'What'
+2026-01-27 14:47:21,994 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:47:22,021 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_What_seq_005_20260127_144722.json
+2026-01-27 14:47:22,023 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:47:22,048 - HandTalk - INFO - Bimanual data loaded: 220 samples with 138 features each
+2026-01-27 14:47:22,051 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:47:22,051 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:47:22,334 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:47:22,416 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:47:22,416 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:47:46,094 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:47:46,094 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:47:46,094 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:47:54,600 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:48:26,548 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Why' (both hands)
+2026-01-27 14:48:26,548 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Why' (both hands)
+2026-01-27 14:53:54,264 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Why'
+2026-01-27 14:53:54,773 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:53:54,804 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Why_seq_001_20260127_145354.json
+2026-01-27 14:53:54,804 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:53:54,818 - HandTalk - INFO - Bimanual data loaded: 240 samples with 138 features each
+2026-01-27 14:53:54,831 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:53:54,831 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:53:55,118 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:53:55,217 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:53:55,217 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:54:09,196 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Why' (both hands)
+2026-01-27 14:54:09,196 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Why' (both hands)
+2026-01-27 14:54:42,943 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Why'
+2026-01-27 14:54:43,419 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:54:43,441 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Why_seq_002_20260127_145443.json
+2026-01-27 14:54:43,443 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:54:43,464 - HandTalk - INFO - Bimanual data loaded: 260 samples with 138 features each
+2026-01-27 14:54:43,466 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:54:43,467 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:54:43,771 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:54:43,869 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:54:43,869 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:55:02,600 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 14:56:50,954 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Who' (both hands)
+2026-01-27 14:56:50,954 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Who' (both hands)
+2026-01-27 14:57:40,359 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Who'
+2026-01-27 14:57:40,882 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:57:40,907 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Who_seq_001_20260127_145740.json
+2026-01-27 14:57:40,907 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:57:40,922 - HandTalk - INFO - Bimanual data loaded: 280 samples with 138 features each
+2026-01-27 14:57:40,938 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:57:40,938 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:57:41,224 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:57:41,306 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:57:41,322 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:57:52,496 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Who' (both hands)
+2026-01-27 14:57:52,503 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Who' (both hands)
+2026-01-27 14:58:04,263 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Who'
+2026-01-27 14:58:04,744 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 14:58:04,772 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Who_seq_002_20260127_145804.json
+2026-01-27 14:58:04,772 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 14:58:04,794 - HandTalk - INFO - Bimanual data loaded: 300 samples with 138 features each
+2026-01-27 14:58:04,794 - HandTalk - INFO - Data split for training and testing
+2026-01-27 14:58:04,794 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 14:58:05,091 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 14:58:05,185 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 14:58:05,209 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 14:58:22,601 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 14:59:01,766 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 14:59:01,766 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 14:59:01,766 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 14:59:31,486 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 14:59:42,860 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 14:59:42,860 - HandTalk - INFO - Starting data collection for bimanual gesture: 'What' (both hands)
+2026-01-27 15:00:00,295 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'What'
+2026-01-27 15:00:00,819 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:00:00,849 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_What_seq_006_20260127_150000.json
+2026-01-27 15:00:00,851 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:00:00,870 - HandTalk - INFO - Bimanual data loaded: 320 samples with 138 features each
+2026-01-27 15:00:00,876 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:00:00,876 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:00:01,200 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:00:01,295 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:00:01,295 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:00:03,992 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:00:03,992 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:00:03,995 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:00:08,247 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:00:48,618 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:00:48,618 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:01:51,549 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Where'
+2026-01-27 15:01:52,106 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:01:52,118 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Where_seq_001_20260127_150152.json
+2026-01-27 15:01:52,129 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:01:52,149 - HandTalk - INFO - Bimanual data loaded: 340 samples with 138 features each
+2026-01-27 15:01:52,149 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:01:52,149 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:01:52,480 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:01:52,579 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:01:52,579 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:02:01,921 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:02:01,921 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:03:40,713 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Where'
+2026-01-27 15:03:41,228 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:03:41,268 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Where_seq_002_20260127_150341.json
+2026-01-27 15:03:41,269 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:03:41,294 - HandTalk - INFO - Bimanual data loaded: 360 samples with 138 features each
+2026-01-27 15:03:41,299 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:03:41,299 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:03:41,655 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:03:41,733 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:03:41,733 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:03:45,383 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:03:45,384 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:03:45,384 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:04:05,662 - HandTalk - INFO - User confirmed deletion of gesture: Where
+2026-01-27 15:04:05,768 - HandTalk - INFO - Deleted 40 samples for gesture 'Where'. Total samples: 360 -> 320
+2026-01-27 15:04:05,769 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 15:04:05,769 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:04:05,771 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:04:08,093 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:04:17,078 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:04:17,078 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:05:40,126 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Where'
+2026-01-27 15:05:40,658 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:05:40,679 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Where_seq_003_20260127_150540.json
+2026-01-27 15:05:40,679 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:05:40,705 - HandTalk - INFO - Bimanual data loaded: 340 samples with 138 features each
+2026-01-27 15:05:40,711 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:05:40,711 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:05:41,056 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:05:41,145 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:05:41,145 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:05:45,954 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:05:45,956 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:05:45,956 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:05:52,527 - HandTalk - INFO - User confirmed deletion of gesture: Where
+2026-01-27 15:05:52,632 - HandTalk - INFO - Deleted 20 samples for gesture 'Where'. Total samples: 340 -> 320
+2026-01-27 15:05:52,634 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 15:05:52,634 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:05:52,634 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:05:55,910 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:06:07,510 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:06:07,510 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:06:42,493 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Where'
+2026-01-27 15:06:42,983 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:06:43,018 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Where_seq_004_20260127_150642.json
+2026-01-27 15:06:43,020 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:06:43,044 - HandTalk - INFO - Bimanual data loaded: 340 samples with 138 features each
+2026-01-27 15:06:43,044 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:06:43,044 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:06:43,371 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:06:43,453 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:06:43,453 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:06:46,615 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:06:46,617 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:06:46,618 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:06:54,529 - HandTalk - INFO - User confirmed deletion of gesture: Where
+2026-01-27 15:06:54,625 - HandTalk - INFO - Deleted 20 samples for gesture 'Where'. Total samples: 340 -> 320
+2026-01-27 15:06:54,625 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 15:06:54,639 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:06:54,640 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:06:56,962 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:07:06,156 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:07:06,157 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:07:38,839 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Where'
+2026-01-27 15:07:39,313 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:07:39,341 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Where_seq_005_20260127_150739.json
+2026-01-27 15:07:39,344 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:07:39,371 - HandTalk - INFO - Bimanual data loaded: 340 samples with 138 features each
+2026-01-27 15:07:39,375 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:07:39,375 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:07:39,697 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:07:39,777 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:07:39,777 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:07:50,647 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:07:50,647 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Where' (both hands)
+2026-01-27 15:08:02,574 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Where'
+2026-01-27 15:08:03,141 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:08:03,164 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Where_seq_006_20260127_150803.json
+2026-01-27 15:08:03,164 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:08:03,187 - HandTalk - INFO - Bimanual data loaded: 360 samples with 138 features each
+2026-01-27 15:08:03,189 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:08:03,189 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:08:03,519 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:08:03,614 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:08:03,614 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:08:22,378 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 15:11:14,772 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Which' (both hands)
+2026-01-27 15:11:14,772 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Which' (both hands)
+2026-01-27 15:11:36,477 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Which'
+2026-01-27 15:11:36,952 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:11:36,983 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Which_seq_001_20260127_151136.json
+2026-01-27 15:11:36,983 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:11:37,020 - HandTalk - INFO - Bimanual data loaded: 380 samples with 138 features each
+2026-01-27 15:11:37,025 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:11:37,025 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:11:37,402 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:11:37,481 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:11:37,481 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:12:31,116 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Which' (both hands)
+2026-01-27 15:12:31,116 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Which' (both hands)
+2026-01-27 15:12:42,635 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Which'
+2026-01-27 15:12:43,162 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:12:43,182 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Which_seq_002_20260127_151243.json
+2026-01-27 15:12:43,182 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:12:43,205 - HandTalk - INFO - Bimanual data loaded: 400 samples with 138 features each
+2026-01-27 15:12:43,205 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:12:43,205 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:12:43,583 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:12:43,677 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:12:43,677 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:12:48,158 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:12:48,158 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:12:48,158 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:12:58,000 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:13:23,737 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:13:23,737 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:13:55,691 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'When'
+2026-01-27 15:13:56,229 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:13:56,272 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_When_seq_001_20260127_151356.json
+2026-01-27 15:13:56,272 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:13:56,289 - HandTalk - INFO - Bimanual data loaded: 420 samples with 138 features each
+2026-01-27 15:13:56,289 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:13:56,289 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:13:56,705 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:13:56,788 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:13:56,788 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:14:07,577 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:14:07,578 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:15:08,039 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'When'
+2026-01-27 15:15:08,509 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:15:08,530 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_When_seq_002_20260127_151508.json
+2026-01-27 15:15:08,530 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:15:08,562 - HandTalk - INFO - Bimanual data loaded: 440 samples with 138 features each
+2026-01-27 15:15:08,562 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:15:08,562 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:15:08,965 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:15:09,049 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:15:09,053 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:15:12,362 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:15:12,363 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:15:12,364 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:15:19,068 - HandTalk - INFO - User confirmed deletion of gesture: When
+2026-01-27 15:15:19,227 - HandTalk - INFO - Deleted 40 samples for gesture 'When'. Total samples: 440 -> 400
+2026-01-27 15:15:19,227 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 15:15:19,227 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:15:19,227 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:15:21,384 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:15:31,100 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:15:31,100 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:15:40,797 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'When'
+2026-01-27 15:15:41,334 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:15:41,355 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_When_seq_003_20260127_151541.json
+2026-01-27 15:15:41,355 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:15:41,377 - HandTalk - INFO - Bimanual data loaded: 420 samples with 138 features each
+2026-01-27 15:15:41,393 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:15:41,393 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:15:41,787 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:15:41,883 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:15:41,885 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:15:54,970 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:15:54,970 - HandTalk - INFO - Starting data collection for bimanual gesture: 'When' (both hands)
+2026-01-27 15:16:19,853 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'When'
+2026-01-27 15:16:20,338 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:16:20,370 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_When_seq_004_20260127_151620.json
+2026-01-27 15:16:20,370 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:16:20,407 - HandTalk - INFO - Bimanual data loaded: 440 samples with 138 features each
+2026-01-27 15:16:20,409 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:16:20,409 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:16:20,811 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:16:20,900 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:16:20,905 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:18:09,170 - HandTalk - INFO - Starting data collection for bimanual gesture: 'How' (both hands)
+2026-01-27 15:18:09,170 - HandTalk - INFO - Starting data collection for bimanual gesture: 'How' (both hands)
+2026-01-27 15:18:57,866 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'How'
+2026-01-27 15:18:58,354 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:18:58,383 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_How_seq_001_20260127_151858.json
+2026-01-27 15:18:58,386 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:18:58,418 - HandTalk - INFO - Bimanual data loaded: 460 samples with 138 features each
+2026-01-27 15:18:58,421 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:18:58,421 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:18:58,848 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:18:58,943 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:18:58,943 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:19:23,970 - HandTalk - INFO - Starting data collection for bimanual gesture: 'How' (both hands)
+2026-01-27 15:19:23,970 - HandTalk - INFO - Starting data collection for bimanual gesture: 'How' (both hands)
+2026-01-27 15:19:38,328 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'How'
+2026-01-27 15:19:38,809 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:19:38,886 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_How_seq_002_20260127_151938.json
+2026-01-27 15:19:38,890 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:19:38,924 - HandTalk - INFO - Bimanual data loaded: 480 samples with 138 features each
+2026-01-27 15:19:38,924 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:19:38,924 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:19:39,364 - HandTalk - INFO - Bimanual model trained with accuracy: 0.99
+2026-01-27 15:19:39,487 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:19:39,487 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:21:00,499 - HandTalk - INFO - Starting data collection for bimanual gesture: 'See You Soon' (both hands)
+2026-01-27 15:21:00,502 - HandTalk - INFO - Starting data collection for bimanual gesture: 'See You Soon' (both hands)
+2026-01-27 15:21:44,662 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'See You Soon'
+2026-01-27 15:21:45,164 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:21:45,190 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_See You Soon_seq_001_20260127_152145.json
+2026-01-27 15:21:45,190 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:21:45,225 - HandTalk - INFO - Bimanual data loaded: 500 samples with 138 features each
+2026-01-27 15:21:45,227 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:21:45,227 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:21:45,702 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:21:45,793 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:21:45,793 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:21:49,970 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:21:49,970 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:21:49,970 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:22:09,242 - HandTalk - INFO - User confirmed deletion of gesture: See You Soon
+2026-01-27 15:22:09,413 - HandTalk - INFO - Deleted 20 samples for gesture 'See You Soon'. Total samples: 500 -> 480
+2026-01-27 15:22:09,413 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 15:22:09,413 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:22:09,423 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:22:13,940 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:22:32,541 - HandTalk - INFO - Starting data collection for bimanual gesture: '' (both hands)
+2026-01-27 15:22:32,541 - HandTalk - INFO - Starting data collection for bimanual gesture: '' (both hands)
+2026-01-27 15:22:37,786 - HandTalk - INFO - No data collected to save
+2026-01-27 15:22:51,286 - HandTalk - INFO - Starting data collection for bimanual gesture: 'See You Soon' (both hands)
+2026-01-27 15:22:51,286 - HandTalk - INFO - Starting data collection for bimanual gesture: 'See You Soon' (both hands)
+2026-01-27 15:23:09,416 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'See You Soon'
+2026-01-27 15:23:09,905 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:23:09,925 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_See You Soon_seq_002_20260127_152309.json
+2026-01-27 15:23:09,925 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:23:09,969 - HandTalk - INFO - Bimanual data loaded: 500 samples with 138 features each
+2026-01-27 15:23:09,972 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:23:09,972 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:23:10,432 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:23:10,544 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:23:10,544 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:23:19,558 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:23:19,560 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:23:19,560 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:23:42,233 - HandTalk - INFO - User confirmed deletion of gesture: See You Soon
+2026-01-27 15:23:42,390 - HandTalk - INFO - Deleted 20 samples for gesture 'See You Soon'. Total samples: 500 -> 480
+2026-01-27 15:23:42,390 - HandTalk - INFO - Deletion successful, refreshing view
+2026-01-27 15:23:42,390 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:23:42,390 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:23:44,279 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:24:07,321 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Goodbye' (both hands)
+2026-01-27 15:24:07,321 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Goodbye' (both hands)
+2026-01-27 15:24:19,913 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Goodbye'
+2026-01-27 15:24:20,325 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:24:20,346 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Goodbye_seq_001_20260127_152420.json
+2026-01-27 15:24:20,346 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:24:20,380 - HandTalk - INFO - Bimanual data loaded: 500 samples with 138 features each
+2026-01-27 15:24:20,384 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:24:20,384 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:24:20,842 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:24:20,932 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:24:20,932 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:24:38,798 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 15:26:28,252 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:26:28,253 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:26:28,254 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:26:50,771 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:27:01,229 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Goodbye' (both hands)
+2026-01-27 15:27:01,229 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Goodbye' (both hands)
+2026-01-27 15:27:15,432 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Goodbye'
+2026-01-27 15:27:15,914 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:27:15,936 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Goodbye_seq_002_20260127_152715.json
+2026-01-27 15:27:15,936 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:27:15,974 - HandTalk - INFO - Bimanual data loaded: 520 samples with 138 features each
+2026-01-27 15:27:15,977 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:27:15,977 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:27:16,434 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:27:16,526 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:27:16,526 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:27:31,419 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 15:29:55,342 - HandTalk - INFO - Starting data collection for bimanual gesture: 'You' (both hands)
+2026-01-27 15:29:55,342 - HandTalk - INFO - Starting data collection for bimanual gesture: 'You' (both hands)
+2026-01-27 15:30:18,190 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'You'
+2026-01-27 15:30:18,634 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:30:18,659 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_You_seq_001_20260127_153018.json
+2026-01-27 15:30:18,659 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:30:18,691 - HandTalk - INFO - Bimanual data loaded: 540 samples with 138 features each
+2026-01-27 15:30:18,691 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:30:18,691 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:30:19,188 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:30:19,279 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:30:19,279 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:30:28,954 - HandTalk - INFO - Starting data collection for bimanual gesture: 'You' (both hands)
+2026-01-27 15:30:28,954 - HandTalk - INFO - Starting data collection for bimanual gesture: 'You' (both hands)
+2026-01-27 15:30:42,082 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'You'
+2026-01-27 15:30:42,639 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:30:42,666 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_You_seq_002_20260127_153042.json
+2026-01-27 15:30:42,666 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:30:42,702 - HandTalk - INFO - Bimanual data loaded: 560 samples with 138 features each
+2026-01-27 15:30:42,705 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:30:42,707 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:30:43,188 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:30:43,291 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:30:43,297 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:30:59,160 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 15:32:27,673 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Im' (both hands)
+2026-01-27 15:32:27,673 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Im' (both hands)
+2026-01-27 15:33:28,800 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Im'
+2026-01-27 15:33:29,283 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:33:29,319 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Im_seq_001_20260127_153329.json
+2026-01-27 15:33:29,319 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:33:29,356 - HandTalk - INFO - Bimanual data loaded: 580 samples with 138 features each
+2026-01-27 15:33:29,361 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:33:29,361 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:33:29,882 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:33:29,997 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:33:29,997 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:33:38,839 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Im' (both hands)
+2026-01-27 15:33:38,842 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Im' (both hands)
+2026-01-27 15:33:50,097 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Im'
+2026-01-27 15:33:50,642 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:33:50,663 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Im_seq_002_20260127_153350.json
+2026-01-27 15:33:50,663 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:33:50,697 - HandTalk - INFO - Bimanual data loaded: 600 samples with 138 features each
+2026-01-27 15:33:50,705 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:33:50,705 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:33:51,244 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:33:51,338 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:33:51,338 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:34:10,708 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Fine' (both hands)
+2026-01-27 15:34:10,708 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Fine' (both hands)
+2026-01-27 15:34:50,230 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Fine'
+2026-01-27 15:34:50,725 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:34:50,748 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Fine_seq_001_20260127_153450.json
+2026-01-27 15:34:50,748 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:34:50,794 - HandTalk - INFO - Bimanual data loaded: 620 samples with 138 features each
+2026-01-27 15:34:50,798 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:34:50,798 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:34:51,349 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:34:51,444 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:34:51,444 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:35:02,616 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Fine' (both hands)
+2026-01-27 15:35:02,616 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Fine' (both hands)
+2026-01-27 15:35:12,028 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Fine'
+2026-01-27 15:35:12,544 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:35:12,571 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Fine_seq_002_20260127_153512.json
+2026-01-27 15:35:12,571 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:35:12,616 - HandTalk - INFO - Bimanual data loaded: 640 samples with 138 features each
+2026-01-27 15:35:12,622 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:35:12,622 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:35:13,178 - HandTalk - INFO - Bimanual model trained with accuracy: 0.99
+2026-01-27 15:35:13,265 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:35:13,265 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:35:16,337 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:35:16,353 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:35:16,353 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:35:24,054 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:35:51,392 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Please' (both hands)
+2026-01-27 15:35:51,392 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Please' (both hands)
+2026-01-27 15:36:08,726 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Please'
+2026-01-27 15:36:09,261 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:36:09,291 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Please_seq_001_20260127_153609.json
+2026-01-27 15:36:09,291 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:36:09,327 - HandTalk - INFO - Bimanual data loaded: 660 samples with 138 features each
+2026-01-27 15:36:09,327 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:36:09,332 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:36:09,915 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:36:10,029 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:36:10,029 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:36:21,545 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Please' (both hands)
+2026-01-27 15:36:21,545 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Please' (both hands)
+2026-01-27 15:36:32,579 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Please'
+2026-01-27 15:36:33,107 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:36:33,121 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Please_seq_002_20260127_153633.json
+2026-01-27 15:36:33,121 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:36:33,164 - HandTalk - INFO - Bimanual data loaded: 680 samples with 138 features each
+2026-01-27 15:36:33,169 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:36:33,169 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:36:33,771 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:36:33,864 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:36:33,864 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:36:49,387 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 15:38:04,417 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Thank You' (both hands)
+2026-01-27 15:38:04,417 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Thank You' (both hands)
+2026-01-27 15:38:45,208 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Thank You'
+2026-01-27 15:38:45,751 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:38:45,775 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Thank You_seq_001_20260127_153845.json
+2026-01-27 15:38:45,775 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:38:45,821 - HandTalk - INFO - Bimanual data loaded: 700 samples with 138 features each
+2026-01-27 15:38:45,821 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:38:45,821 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:38:46,511 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:38:46,623 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:38:46,633 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:39:01,256 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Thank You' (both hands)
+2026-01-27 15:39:01,256 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Thank You' (both hands)
+2026-01-27 15:39:11,687 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Thank You'
+2026-01-27 15:39:12,268 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:39:12,290 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Thank You_seq_002_20260127_153912.json
+2026-01-27 15:39:12,290 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:39:12,334 - HandTalk - INFO - Bimanual data loaded: 720 samples with 138 features each
+2026-01-27 15:39:12,338 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:39:12,338 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:39:12,969 - HandTalk - INFO - Bimanual model trained with accuracy: 0.99
+2026-01-27 15:39:13,069 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:39:13,071 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:39:43,363 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Welcome' (both hands)
+2026-01-27 15:39:43,363 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Welcome' (both hands)
+2026-01-27 15:39:59,080 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Welcome'
+2026-01-27 15:39:59,570 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:39:59,598 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Welcome_seq_001_20260127_153959.json
+2026-01-27 15:39:59,598 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:39:59,642 - HandTalk - INFO - Bimanual data loaded: 740 samples with 138 features each
+2026-01-27 15:39:59,646 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:39:59,646 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:40:00,316 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:40:00,416 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:40:00,416 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:40:18,483 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Welcome' (both hands)
+2026-01-27 15:40:18,483 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Welcome' (both hands)
+2026-01-27 15:40:28,564 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Welcome'
+2026-01-27 15:40:28,998 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:40:29,021 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Welcome_seq_002_20260127_154029.json
+2026-01-27 15:40:29,021 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:40:29,068 - HandTalk - INFO - Bimanual data loaded: 760 samples with 138 features each
+2026-01-27 15:40:29,069 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:40:29,071 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:40:29,749 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:40:29,843 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:40:29,843 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:40:50,741 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 15:42:49,192 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Sorry' (both hands)
+2026-01-27 15:42:49,192 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Sorry' (both hands)
+2026-01-27 15:43:20,080 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Sorry'
+2026-01-27 15:43:20,586 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:43:20,629 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Sorry_seq_001_20260127_154320.json
+2026-01-27 15:43:20,629 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:43:20,676 - HandTalk - INFO - Bimanual data loaded: 780 samples with 138 features each
+2026-01-27 15:43:20,682 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:43:20,682 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:43:21,415 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:43:21,529 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:43:21,529 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:43:32,429 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Sorry' (both hands)
+2026-01-27 15:43:32,429 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Sorry' (both hands)
+2026-01-27 15:43:44,671 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Sorry'
+2026-01-27 15:43:45,170 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:43:45,197 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Sorry_seq_002_20260127_154345.json
+2026-01-27 15:43:45,197 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:43:45,241 - HandTalk - INFO - Bimanual data loaded: 800 samples with 138 features each
+2026-01-27 15:43:45,246 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:43:45,248 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:43:45,984 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:43:46,089 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:43:46,089 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:44:17,221 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hungry' (both hands)
+2026-01-27 15:44:17,221 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hungry' (both hands)
+2026-01-27 15:44:41,117 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Hungry'
+2026-01-27 15:44:41,602 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:44:41,618 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Hungry_seq_001_20260127_154441.json
+2026-01-27 15:44:41,618 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:44:41,663 - HandTalk - INFO - Bimanual data loaded: 820 samples with 138 features each
+2026-01-27 15:44:41,665 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:44:41,665 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:44:42,456 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:44:42,552 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:44:42,552 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:44:53,339 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hungry' (both hands)
+2026-01-27 15:44:53,339 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Hungry' (both hands)
+2026-01-27 15:45:03,632 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Hungry'
+2026-01-27 15:45:04,119 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:45:04,142 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Hungry_seq_002_20260127_154504.json
+2026-01-27 15:45:04,142 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:45:04,194 - HandTalk - INFO - Bimanual data loaded: 840 samples with 138 features each
+2026-01-27 15:45:04,199 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:45:04,214 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:45:04,989 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:45:05,082 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:45:05,084 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:52:01,771 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:52:01,771 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:52:01,771 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:55:27,839 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:55:40,338 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Name' (both hands)
+2026-01-27 15:55:40,338 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Name' (both hands)
+2026-01-27 15:55:57,990 - HandTalk - INFO - No data collected to save
+2026-01-27 15:56:00,776 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:56:00,776 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:56:00,776 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:56:29,872 - HandTalk - INFO - User exited interactive gesture viewer
+2026-01-27 15:56:45,708 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Name' (both hands)
+2026-01-27 15:56:45,708 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Name' (both hands)
+2026-01-27 15:57:08,494 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Name'
+2026-01-27 15:57:09,051 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:57:09,073 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Name_seq_001_20260127_155709.json
+2026-01-27 15:57:09,073 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:57:09,124 - HandTalk - INFO - Bimanual data loaded: 860 samples with 138 features each
+2026-01-27 15:57:09,128 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:57:09,128 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:57:09,961 - HandTalk - INFO - Bimanual model trained with accuracy: 1.00
+2026-01-27 15:57:10,072 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:57:10,072 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:57:20,532 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Name' (both hands)
+2026-01-27 15:57:20,532 - HandTalk - INFO - Starting data collection for bimanual gesture: 'Name' (both hands)
+2026-01-27 15:57:32,827 - HandTalk - INFO - Successfully collected 20 samples for gesture: 'Name'
+2026-01-27 15:57:33,296 - HandTalk - INFO - Saved enhanced bimanual data to data/gestures_bimanual.csv
+2026-01-27 15:57:33,321 - HandTalk - INFO - Saved motion sequence to data/arm_hand_sequences/gesture_Name_seq_002_20260127_155733.json
+2026-01-27 15:57:33,321 - HandTalk - INFO - Starting automatic HandTalk Bimanual Sign Language Recognition Model Training
+2026-01-27 15:57:33,370 - HandTalk - INFO - Bimanual data loaded: 880 samples with 138 features each
+2026-01-27 15:57:33,370 - HandTalk - INFO - Data split for training and testing
+2026-01-27 15:57:33,370 - HandTalk - INFO - Training Random Forest classifier...
+2026-01-27 15:57:34,201 - HandTalk - INFO - Bimanual model trained with accuracy: 0.99
+2026-01-27 15:57:34,293 - HandTalk - INFO - Bimanual model saved as sign_language_model_bimanual.pkl
+2026-01-27 15:57:34,293 - HandTalk - INFO - Automatic bimanual training completed successfully!
+2026-01-27 15:57:56,293 - HandTalk - INFO - Bimanual model loaded from sign_language_model_bimanual.pkl
+2026-01-27 15:58:35,323 - HandTalk - INFO - Running interactive gesture viewer
+2026-01-27 15:58:35,323 - HandTalk - INFO - Starting interactive gesture viewer
+2026-01-27 15:58:35,323 - HandTalk - INFO - Loading gesture data from data/gestures_bimanual.csv
+2026-01-27 15:58:49,293 - HandTalk - INFO - User exited interactive gesture viewer

@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.view.WindowCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
@@ -45,11 +47,23 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.animation.ExperimentalAnimationApi
 import com.example.handtalklokal.components.TutorialOverlay
+import com.example.handtalklokal.ui.theme.GradientBackground
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Set status bar and navigation bar appearance for better contrast
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = android.graphics.Color.WHITE
+        window.navigationBarColor = android.graphics.Color.WHITE
+        
+        // Make status bar icons dark for better visibility on light background
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.isAppearanceLightStatusBars = true
+        windowInsetsController.isAppearanceLightNavigationBars = true
+        
         setContent {
             HandTalkLokalTheme {
                 HandTalkApp()
@@ -68,26 +82,28 @@ fun HandTalkApp() {
     //     viewModel.startTutorial()
     // }
     
-    Scaffold(
-        bottomBar = { 
-            BottomNavigationBar(
-                navController = navController,
-                viewModel = viewModel
-            ) 
-        }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "translator",
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable("translator") { 
-                SignLanguageTranslatorScreenWithFeatures(navController, viewModel) 
+    GradientBackground {
+        Scaffold(
+            bottomBar = { 
+                BottomNavigationBar(
+                    navController = navController,
+                    viewModel = viewModel
+                ) 
             }
-            composable("tutorials") { 
-                // Navigate to the actual tutorial screen implementation
-                // The actual implementation is in TutorialScreen.kt
-                HandSignTutorialsScreenWithFeatures(navController)
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = "translator",
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable("translator") { 
+                    SignLanguageTranslatorScreenWithFeatures(navController, viewModel) 
+                }
+                composable("tutorials") { 
+                    // Navigate to the actual tutorial screen implementation
+                    // The actual implementation is in TutorialScreen.kt
+                    HandSignTutorialsScreenWithFeatures(navController)
+                }
             }
         }
     }
@@ -168,22 +184,26 @@ fun BottomNavigationBar(
                         transitionSpec = {
                             if (targetState) {
                                 (slideInVertically(
+                                    initialOffsetY = { height -> height }, // Start from below
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
                                 ) + fadeIn(
                                     animationSpec = tween(durationMillis = 400, delayMillis = 200)
                                 )) togetherWith
                                 (slideOutVertically(
+                                    targetOffsetY = { height -> -height }, // Slide up when leaving
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
                                 ) + fadeOut(
                                     animationSpec = tween(durationMillis = 400)
                                 ))
                             } else {
                                 (slideInVertically(
+                                    initialOffsetY = { height -> -height }, // Start from above
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
                                 ) + fadeIn(
                                     animationSpec = tween(durationMillis = 400, delayMillis = 200)
                                 )) togetherWith
                                 (slideOutVertically(
+                                    targetOffsetY = { height -> height }, // Slide down when leaving
                                     animationSpec = tween(durationMillis = 800, easing = LinearOutSlowInEasing)
                                 ) + fadeOut(
                                     animationSpec = tween(durationMillis = 400)
@@ -203,7 +223,7 @@ fun BottomNavigationBar(
                             Icon(
                                 imageVector = item.icon,
                                 contentDescription = item.label,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                tint = Color.Black,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -238,7 +258,7 @@ fun SignLanguageTranslatorScreen(navController: NavHostController) {
                 title = { Text("Sign Language Translator") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
                     }
                 }
             )

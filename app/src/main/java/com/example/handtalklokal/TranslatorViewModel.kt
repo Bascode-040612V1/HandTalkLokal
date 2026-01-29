@@ -4,9 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.AudioManager
+import android.os.Build
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import android.view.Surface
+import android.view.WindowManager
 import androidx.camera.core.ImageProxy
 import androidx.compose.ui.geometry.Rect
 import androidx.lifecycle.AndroidViewModel
@@ -336,53 +339,115 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
      */
     fun processImage(image: ImageProxy) {
         Log.d("TimingDebug", "Image processing started at ${System.currentTimeMillis()}, current dialect: ${_selectedDialect.value}")
+        Log.d("HandDetectionDebug", "Starting image processing. Image size: ${image.width}x${image.height}")
         // Always process images when camera is active (recording is always true)
         viewModelScope.launch {
             try {
                 // Convert ImageProxy to Bitmap
                 val bitmap = ImageUtils.imageProxyToBitmap(image)
+                Log.d("HandDetectionDebug", "Bitmap converted. Size: ${bitmap.width}x${bitmap.height}")
+                if (bitmap.width == 0 || bitmap.height == 0) {
+                    Log.e("HandDetectionDebug", "Invalid bitmap dimensions: ${bitmap.width}x${bitmap.height}")
+                    return@launch
+                }
                 
                 // Extract hand and pose landmarks using MediaPipe
                 val handLandmarks = mediaPipeHelper.extractHandLandmarks(bitmap)
                 val poseLandmarks = mediaPipeHelper.extractPoseLandmarks(bitmap)
+                Log.d("HandDetectionDebug", "MediaPipe extraction complete. Hand landmarks: ${handLandmarks.size}, Pose landmarks: ${poseLandmarks.size}")
+                
+                // Check if MediaPipe is working properly
+                if (handLandmarks.isEmpty()) {
+                    Log.d("HandDetectionDebug", "No hands detected by MediaPipe. This might indicate lighting issues, hand positioning, or MediaPipe initialization problems.")
+                }
                 
                 // Update landmark data for visualization (all detected hands)
                 val landmarkPoints = mutableListOf<LandmarkPoint>()
+                
+                // Get image buffer rotation to adjust landmarks accordingly
+                // This is the CORRECT source for MediaPipe landmark rotation
+                val rotationDegrees = image.imageInfo.rotationDegrees
+                
+                // Convert rotation degrees to Surface.ROTATION constants
+                val rotation = when (rotationDegrees) {
+                    0 -> Surface.ROTATION_0
+                    90 -> Surface.ROTATION_90
+                    180 -> Surface.ROTATION_180
+                    270 -> Surface.ROTATION_270
+                    else -> Surface.ROTATION_0
+                }
+                
+                // Note: All rotation is now handled by the transformLandmarkCoordinates function based on device orientation
                 
                 // Convert MediaPipe hand landmarks to UI landmark points for visualization
                 for ((handIndex, hand) in handLandmarks.withIndex()) {
                     // Convert actual landmarks to UI points
                     for (landmark in hand) {
+                        // Transform landmark coordinates based on image buffer rotation
+                        val (rotatedX, rotatedY) = transformLandmarkCoordinates(landmark.x(), landmark.y(), rotation)
+                        
+                        // Apply front camera mirroring after rotation
+                        val (finalX, finalY) = mirrorForFrontCamera(rotatedX, rotatedY, _isFrontCamera.value)
+                        
+                        // DO NOT swap hand indices since we're no longer applying mirroring
+                        // The ML model's handedness output is trusted directly
+                        val correctedHandIndex = handIndex
+                        
                         // Add landmark points for visualization (normalized coordinates)
                         // Note: These are normalized coordinates (0.0 to 1.0), so we need to scale them
                         // to the actual screen size for visualization
-                        landmarkPoints.add(LandmarkPoint(landmark.x(), landmark.y(), "hand", handIndex))
+                        landmarkPoints.add(LandmarkPoint(finalX, finalY, "hand", correctedHandIndex))
                     }
                 }
                 
-                // Also add pose landmarks for visualization (shoulders, elbows, wrists)
-                // Pose landmarks don't belong to a specific hand, so use -1 as handIndex
-                for (poseLandmark in poseLandmarks) {
-                    landmarkPoints.add(LandmarkPoint(poseLandmark.x(), poseLandmark.y(), "pose", -1))
+                // Also add specific pose landmarks for visualization (wrists and elbows only)
+                // Pose landmark indices: 13=left elbow, 14=right elbow, 15=left wrist, 16=right wrist
+                val keyPoseLandmarkIndices = listOf(13, 14, 15, 16)
+                
+                for (index in keyPoseLandmarkIndices) {
+                    if (index < poseLandmarks.size) {
+                        val poseLandmark = poseLandmarks[index]
+                        val (rotatedX, rotatedY) = transformLandmarkCoordinates(poseLandmark.x(), poseLandmark.y(), rotation)
+                        val (adjustedX, adjustedY) = mirrorForFrontCamera(rotatedX, rotatedY, _isFrontCamera.value)
+                        // Add pose landmarks with specific type for visualization
+                        val landmarkType = when (index) {
+                            13 -> "left_elbow"
+                            14 -> "right_elbow"
+                            15 -> "left_wrist"
+                            16 -> "right_wrist"
+                            else -> "pose"
+                        }
+                        landmarkPoints.add(LandmarkPoint(adjustedX, adjustedY, landmarkType, -1))
+                    }
                 }
                 
                 _landmarks.value = landmarkPoints
                 
                 // Convert landmarks to features
                 val features = mediaPipeHelper.landmarksToFeatures(handLandmarks, poseLandmarks)
+                Log.d("HandDetectionDebug", "Feature extraction result: ${if (features != null) "${features.size} features" else "No features (null)"}")
+                
+                // Additional debugging for feature extraction issues
+                if (features != null && features.size != 138) {
+                    Log.e("HandDetectionDebug", "Feature array size mismatch. Expected: 138, Got: ${features.size}")
+                }
                 
                 // Recognize gesture using TensorFlow Lite model
                 val recognitionResult = if (features != null) {
+                    Log.d("HandDetectionDebug", "Calling gesture recognition with ${features.size} features")
                     gestureRecognitionHelper.recognizeGesture(features)
                 } else {
+                    Log.d("HandDetectionDebug", "No features available for gesture recognition")
                     RecognitionResult("", 0.0f, "None") // No hands detected, don't show anything
                 }
                 
                 // Update confidence level for UI
                 _confidenceLevel.value = recognitionResult.confidence
+                Log.d("HandDetectionDebug", "Recognition result: gesture='${recognitionResult.gesture}', confidence=${recognitionResult.confidence}, level=${recognitionResult.confidenceLevel}")
                 
                 // Only update text if we recognized a high confidence gesture
                 if (recognitionResult.gesture.isNotEmpty() && recognitionResult.gesture != "Unknown" && recognitionResult.gesture != "Error" && recognitionResult.gesture != "Unrecognized (Medium Confidence)") {
+                    Log.d("HandDetectionDebug", "Processing valid gesture: ${recognitionResult.gesture}")
                     // Check for duplicate gesture suppression
                     val currentTime = System.currentTimeMillis()
                     val isDuplicateGesture = recognitionResult.gesture == lastAcceptedGesture && 
@@ -399,6 +464,7 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
             } catch (e: Exception) {
                 // Handle any errors during processing
                 Log.e("TranslatorViewModel", "Error processing image", e)
+                Log.e("HandDetectionDebug", "Critical error in hand detection pipeline: ${e.message}", e)
                 // Don't update the UI with error messages to avoid flickering
             } finally {
                 // Close the image to prevent memory leaks
@@ -428,8 +494,14 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
         Log.d("TranslationDebug", "Gesture received: $gesture, current dialect: ${_selectedDialect.value}")
         
         // Sanitize the gesture to match exactly with translation map keys
-        val sanitizedGesture = gesture.replace(Regex("[^a-zA-Z\\s]"), "").trim()
-        Log.d("TranslationDebug", "Sanitized gesture: $sanitizedGesture")
+        // Standardize to title case with proper spacing
+        val sanitizedGesture = gesture.trim()
+            .split(" ")
+            .filter { it.isNotBlank() }
+            .joinToString(" ") { word -> 
+                word.lowercase().replaceFirstChar { it.uppercase() } 
+            }
+        Log.d("TranslationDebug", "Sanitized gesture: '$sanitizedGesture'")
         
         // Translate the gesture to the selected dialect before speaking
         val translatedGesture = translateGesture(sanitizedGesture)
@@ -732,6 +804,42 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
     
     fun stopGestureMonitoringForTutorial() {
         _waitForGestureInTutorial.value = false
+    }
+    
+    /**
+     * Transforms normalized MediaPipe landmarks into PreviewView space.
+     *
+     * IMPORTANT:
+     * - Uses image.imageInfo.rotationDegrees as the single source of truth
+     * - NO mirroring is EVER applied here
+     * - CameraX is the single source of truth for front-camera mirroring
+     * - This function only handles ROTATION based on buffer orientation
+     */
+    
+    private fun mirrorForFrontCamera(
+        x: Float,
+        y: Float,
+        isFrontCamera: Boolean
+    ): Pair<Float, Float> {
+        return if (isFrontCamera) {
+            Pair(1f - x, y)   // Horizontal mirror only
+        } else {
+            Pair(x, y)        // Back camera untouched
+        }
+    }
+    private fun transformLandmarkCoordinates(
+        x: Float,
+        y: Float,
+        rotation: Int
+    ): Pair<Float, Float> {
+        // Apply device rotation transformations only (no mirroring)
+        return when (rotation) {
+            Surface.ROTATION_0 -> Pair(x, y)  // Portrait
+            Surface.ROTATION_90 -> Pair(1.0f - y, x)  // Landscape right
+            Surface.ROTATION_180 -> Pair(1.0f - x, 1.0f - y)  // Upside down
+            Surface.ROTATION_270 -> Pair(y, 1.0f - x)  // Landscape left
+            else -> Pair(x, y)
+        }
     }
     
     override fun onCleared() {

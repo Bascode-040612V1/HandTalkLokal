@@ -1,0 +1,31 @@
+Gesture Recognition Model Information
+====================================
+
+Number of classes: 22
+Number of features: 138
+Model type: Random Forest
+Number of trees: 100
+
+Classes:
+  0: Afternoon
+  1: Fine
+  2: Good
+  3: Goodbye
+  4: Hello
+  5: How
+  6: Hungry
+  7: Im
+  8: Morning
+  9: Name
+  10: Night
+  11: Please
+  12: Sorry
+  13: Thank You
+  14: Welcome
+  15: What
+  16: When
+  17: Where
+  18: Which
+  19: Who
+  20: Why
+  21: You

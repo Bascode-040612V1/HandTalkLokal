@@ -35,11 +35,7 @@ class MediaPipeHelper(context: Context) : Closeable {
                 
             handLandmarker = HandLandmarker.createFromOptions(context, handOptions)
             Log.d("MediaPipeHelper", "MediaPipe hand landmarker initialized successfully")
-        } catch (e: Exception) {
-            Log.e("MediaPipeHelper", "Failed to initialize MediaPipe hand landmarker", e)
-        }
-        
-        try {
+            
             // Initialize pose landmarker
             val poseBaseOptions = BaseOptions.builder()
                 .setModelAssetPath("pose_landmarker.task")
@@ -47,14 +43,13 @@ class MediaPipeHelper(context: Context) : Closeable {
             
             val poseOptions = PoseLandmarker.PoseLandmarkerOptions.builder()
                 .setBaseOptions(poseBaseOptions)
-                .setOutputSegmentationMasks(false)
                 .setNumPoses(1)
                 .build()
                 
             poseLandmarker = PoseLandmarker.createFromOptions(context, poseOptions)
             Log.d("MediaPipeHelper", "MediaPipe pose landmarker initialized successfully")
         } catch (e: Exception) {
-            Log.e("MediaPipeHelper", "Failed to initialize MediaPipe pose landmarker", e)
+            Log.e("MediaPipeHelper", "Failed to initialize MediaPipe components", e)
         }
     }
     
@@ -62,10 +57,12 @@ class MediaPipeHelper(context: Context) : Closeable {
      * Extract hand landmarks from bitmap using MediaPipe
      */
     fun extractHandLandmarks(bitmap: Bitmap): List<List<NormalizedLandmark>> {
+        Log.d("MediaPipeDebug", "Starting hand landmark extraction. Bitmap size: ${bitmap.width}x${bitmap.height}")
         return try {
             handLandmarker?.let { landmarker ->
                 val mpImage = BitmapImageBuilder(bitmap).build()
                 val result = landmarker.detect(mpImage)
+                Log.d("MediaPipeDebug", "Hand detection completed. Result type: ${result.javaClass.name}")
                 
                 // Extract landmarks from all detected hands using direct API access
                 val allLandmarks = mutableListOf<List<NormalizedLandmark>>()
@@ -92,29 +89,45 @@ class MediaPipeHelper(context: Context) : Closeable {
                     
                     if (landmarksMethod != null) {
                         val handLandmarksList = landmarksMethod.invoke(result)
+                        Log.d("MediaPipeDebug", "Successfully invoked landmarks method. Result type: ${handLandmarksList?.javaClass?.name}")
                         
                         // Check if it's a collection and process accordingly
                         if (handLandmarksList is Collection<*>) {
+                            Log.d("MediaPipeDebug", "Hand landmarks list is collection with ${handLandmarksList.size} items")
                             for (singleHandLandmarks in handLandmarksList) {
                                 val landmarksForHand = mutableListOf<NormalizedLandmark>()
                                 
                                 // Check if singleHandLandmarks is iterable
                                 if (singleHandLandmarks is Iterable<*>) {
+                                    var landmarkCount = 0
                                     for (landmark in singleHandLandmarks) {
                                         if (landmark is NormalizedLandmark) {
                                             landmarksForHand.add(landmark)
+                                            landmarkCount++
                                         }
                                     }
+                                    Log.d("MediaPipeDebug", "Processed hand with ${landmarkCount} landmarks")
+                                } else {
+                                    Log.d("MediaPipeDebug", "singleHandLandmarks is not iterable, type: ${singleHandLandmarks?.javaClass?.name}")
                                 }
                                 
                                 if (landmarksForHand.isNotEmpty()) {
                                     allLandmarks.add(landmarksForHand)
+                                    Log.d("MediaPipeDebug", "Added hand with ${landmarksForHand.size} landmarks. Total hands: ${allLandmarks.size}")
+                                } else {
+                                    Log.d("MediaPipeDebug", "Empty landmarks found for hand")
                                 }
                             }
+                        } else {
+                            Log.d("MediaPipeDebug", "handLandmarksList is not a collection, type: ${handLandmarksList?.javaClass?.name}")
                         }
                     }
                     
-                    Log.d("MediaPipeHelper", "Extracted ${allLandmarks.size} hands with landmarks")
+                    if (allLandmarks.isNotEmpty()) {
+                        Log.d("MediaPipeDebug", "Extracted ${allLandmarks.size} hands with landmarks successfully")
+                    } else {
+                        Log.d("MediaPipeDebug", "No hands detected in the frame")
+                    }
                 } catch (e: Exception) {
                     Log.e("MediaPipeHelper", "Error accessing landmarks with reflection", e)
                 }
@@ -131,10 +144,12 @@ class MediaPipeHelper(context: Context) : Closeable {
      * Extract pose landmarks from bitmap using MediaPipe
      */
     fun extractPoseLandmarks(bitmap: Bitmap): List<NormalizedLandmark> {
+        Log.d("MediaPipeDebug", "Starting pose landmark extraction. Bitmap size: ${bitmap.width}x${bitmap.height}")
         return try {
             poseLandmarker?.let { landmarker ->
                 val mpImage = BitmapImageBuilder(bitmap).build()
                 val result = landmarker.detect(mpImage)
+                Log.d("MediaPipeDebug", "Pose detection completed. Result type: ${result.javaClass.name}")
                 
                 try {
                     // Use reflection to find the correct method for accessing pose landmarks
@@ -159,6 +174,7 @@ class MediaPipeHelper(context: Context) : Closeable {
                     
                     if (poseLandmarksMethod != null) {
                         val poseLandmarksResult = poseLandmarksMethod.invoke(result)
+                        Log.d("MediaPipeDebug", "Successfully invoked pose landmarks method. Result type: ${poseLandmarksResult?.javaClass?.name}")
                         
                         // Check if it's a collection and process accordingly
                         if (poseLandmarksResult is Collection<*>) {
@@ -170,14 +186,14 @@ class MediaPipeHelper(context: Context) : Closeable {
                                             landmarks.add(landmark)
                                         }
                                     }
-                                    Log.d("MediaPipeHelper", "Extracted ${landmarks.size} pose landmarks")
+                                    Log.d("MediaPipeDebug", "Extracted ${landmarks.size} pose landmarks successfully")
                                     return landmarks
                                 }
                             }
                         }
                     }
                     
-                    Log.d("MediaPipeHelper", "No pose landmarks extracted")
+                    Log.d("MediaPipeDebug", "No pose landmarks extracted from the frame")
                 } catch (e: Exception) {
                     Log.e("MediaPipeHelper", "Error accessing pose landmarks with reflection", e)
                 }
@@ -194,13 +210,20 @@ class MediaPipeHelper(context: Context) : Closeable {
      * Convert landmarks to feature array for gesture recognition
      * This matches the Python training model format:
      * 138 features = 126 hand features (2 hands × 21 landmarks × 3 coordinates) + 12 pose features
+     * 
+     * Hand order is standardized as follows to ensure deterministic behavior:
+     * - Index 0: Right hand side of frame (leftmost hand)
+     * - Index 1: Left hand side of frame (rightmost hand)
      */
     fun landmarksToFeatures(
         handLandmarks: List<List<NormalizedLandmark>>,
         poseLandmarks: List<NormalizedLandmark>
     ): FloatArray? {
+        Log.d("MediaPipeDebug", "Converting landmarks to features. Hands detected: ${handLandmarks.size}, Pose landmarks: ${poseLandmarks.size}")
+        
         // Check if any hands were detected
         if (handLandmarks.isEmpty()) {
+            Log.d("MediaPipeDebug", "No hands detected, returning null for gesture recognition")
             // No hands detected, return null to indicate no gesture should be recognized
             return null
         }
@@ -208,9 +231,21 @@ class MediaPipeHelper(context: Context) : Closeable {
         // Create feature array with 138 elements (matching Python model)
         val features = FloatArray(138) { 0.0f }
         
-        // Extract hand landmarks features (up to 2 hands)
-        for (handIndex in 0 until minOf(2, handLandmarks.size)) {
-            val landmarks = handLandmarks[handIndex]
+        // Sort hands by X position (leftmost first) to ensure deterministic ordering
+        // This ensures consistent feature extraction regardless of detection order
+        val sortedHands = handLandmarks.mapIndexed { index, landmarks ->
+            // Calculate average X position of landmarks to determine hand position
+            val avgX = if (landmarks.isNotEmpty()) {
+                landmarks.sumOf { it.x().toDouble() } / landmarks.size
+            } else {
+                Double.MAX_VALUE // Put invalid hands at the end
+            }
+            Pair(avgX, landmarks)
+        }.sortedBy { it.first }.map { it.second }
+        
+        // Extract hand landmarks features (up to 2 hands) in deterministic order
+        for (handIndex in 0 until minOf(2, sortedHands.size)) {
+            val landmarks = sortedHands[handIndex]
             
             // Get wrist landmark (index 0) to normalize all other landmarks relative to it
             if (landmarks.isNotEmpty() && landmarks.size >= 10) { // Need at least wrist and middle finger base
@@ -254,7 +289,7 @@ class MediaPipeHelper(context: Context) : Closeable {
         }
         
         // If only one hand is detected, pad with zeros for the second hand
-        if (handLandmarks.size == 1) {
+        if (sortedHands.size == 1) {
             // Zero padding for second hand (63 features: 21 landmarks × 3 coordinates)
             // Already initialized to 0.0f
         }

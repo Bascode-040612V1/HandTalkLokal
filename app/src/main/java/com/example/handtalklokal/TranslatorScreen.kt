@@ -32,9 +32,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.boundsInRoot
@@ -165,7 +168,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                                 Icon(
                                     imageVector = Icons.Default.Info,
                                     contentDescription = "Show Tutorial",
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = Color.Black
                                 )
                             }
                         }
@@ -276,6 +279,16 @@ fun SignLanguageTranslatorScreenWithFeatures(
                                         modifier = Modifier.fillMaxWidth().aspectRatio(1f) // Constrain to 1:1 visible area
                                     )
                                     
+                                    // Hand landmarks visualization overlay
+                                    HandLandmarksOverlay(
+                                        landmarks = landmarks,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .aspectRatio(1f)
+                                            .zIndex(1f) // Ensure it's drawn on top
+                                            .alpha(0.9f) // 90% opacity
+                                    )
+                                    
                                     // Camera switch button - positioned at the bottom center
                                     Button(
                                         onClick = { viewModel.switchCamera() },
@@ -293,6 +306,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                                         Icon(
                                             imageVector = if (isFrontCamera) Icons.Default.CameraFront else Icons.Default.CameraRear,
                                             contentDescription = if (isFrontCamera) "Switch to back camera" else "Switch to front camera",
+                                            tint = Color.White,
                                             modifier = Modifier.size(32.dp)
                                         )
                                     }
@@ -320,7 +334,7 @@ fun SignLanguageTranslatorScreenWithFeatures(
                                             Icon(
                                                 imageVector = Icons.Default.VideocamOff,
                                                 contentDescription = "Camera off",
-                                                tint = MaterialTheme.colorScheme.primary,
+                                                tint = Color.White,
                                                 modifier = Modifier.size(48.dp)
                                             )
                                             
@@ -491,12 +505,13 @@ fun SignLanguageTranslatorScreenWithFeatures(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = getDialectName(selectedDialect),
+                                text = if (showTutorial && currentTutorialStep == 3 && selectedDialect == "tl") "Select Dialect" else getDialectName(selectedDialect),
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = "Expand"
+                                contentDescription = "Expand",
+                                tint = Color.Black
                             )
                         }
                     }
@@ -557,6 +572,47 @@ fun SignLanguageTranslatorScreenWithFeatures(
                 viewModel.setCurrentTutorialStep(4) // Move to dialect selection step
             },
             modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+/**
+ * Draw pose landmark points (wrists and elbows only)
+ */
+private fun DrawScope.drawPoseLandmarkPoints(
+    landmarks: List<LandmarkPoint>,
+    canvasSize: androidx.compose.ui.geometry.Size
+) {
+    landmarks.forEach { landmark ->
+        val position = Offset(
+            landmark.x * canvasSize.width,
+            landmark.y * canvasSize.height
+        )
+        
+        // Different colors for different pose landmarks
+        val pointColor = when (landmark.type) {
+            "left_elbow" -> Color.Yellow    // Left elbow - yellow
+            "right_elbow" -> Color.Cyan     // Right elbow - cyan
+            "left_wrist" -> Color.Magenta   // Left wrist - magenta
+            "right_wrist" -> Color.Green    // Right wrist - green
+            else -> Color.Gray              // Default gray
+        }
+        
+        val pointRadius = 8f  // Slightly larger than hand landmarks
+        
+        // Draw filled circle
+        drawCircle(
+            color = pointColor,
+            radius = pointRadius,
+            center = position
+        )
+        
+        // Draw outline
+        drawCircle(
+            color = Color.White,
+            radius = pointRadius,
+            center = position,
+            style = Stroke(width = 2f)
         )
     }
 }
@@ -682,5 +738,126 @@ fun DialectSelectionModal(
                 }
             }
         }
+    }
+}
+
+/**
+ * Composable that draws hand landmarks and skeleton on top of the camera preview
+ */
+@Composable
+fun HandLandmarksOverlay(
+    landmarks: List<LandmarkPoint>,
+    modifier: Modifier = Modifier
+) {
+    Canvas(modifier = modifier) {
+        if (landmarks.isNotEmpty()) {
+            // Group landmarks by hand index
+            val handGroups = landmarks.groupBy { it.handIndex }
+            
+            handGroups.forEach { (handIndex, handLandmarks) ->
+                if (handLandmarks.isNotEmpty()) {
+                    // Filter to only show hand landmarks (exclude pose landmarks)
+                    val handOnlyLandmarks = handLandmarks.filter { it.type == "hand" }
+                    
+                    if (handOnlyLandmarks.isNotEmpty()) {
+                        // Draw hand skeleton connections
+                        drawHandSkeleton(handOnlyLandmarks, size, handIndex)
+                        
+                        // Draw landmark points
+                        drawLandmarkPoints(handOnlyLandmarks, size, handIndex)
+                    }
+                }
+            }
+            
+            // Draw pose landmarks (wrists and elbows only)
+            val poseLandmarks = landmarks.filter { it.type in listOf("left_elbow", "right_elbow", "left_wrist", "right_wrist") }
+            if (poseLandmarks.isNotEmpty()) {
+                drawPoseLandmarkPoints(poseLandmarks, size)
+            }
+        }
+    }
+}
+
+/**
+ * Draw the hand skeleton connections between landmark points
+ */
+private fun DrawScope.drawHandSkeleton(
+    landmarks: List<LandmarkPoint>,
+    canvasSize: androidx.compose.ui.geometry.Size,
+    handIndex: Int
+) {
+    if (landmarks.size < 21) return // Need all 21 landmarks for complete skeleton
+    
+    // Define hand connections (based on MediaPipe hand landmark topology)
+    val connections = listOf(
+        // Thumb connections (landmarks 0-4)
+        Pair(0, 1), Pair(1, 2), Pair(2, 3), Pair(3, 4),
+        // Index finger connections (landmarks 0, 5-8)
+        Pair(0, 5), Pair(5, 6), Pair(6, 7), Pair(7, 8),
+        // Middle finger connections (landmarks 0, 9-12)
+        Pair(0, 9), Pair(9, 10), Pair(10, 11), Pair(11, 12),
+        // Ring finger connections (landmarks 0, 13-16)
+        Pair(0, 13), Pair(13, 14), Pair(14, 15), Pair(15, 16),
+        // Pinky finger connections (landmarks 0, 17-20)
+        Pair(0, 17), Pair(17, 18), Pair(18, 19), Pair(19, 20),
+        // Palm connections
+        Pair(5, 9), Pair(9, 13), Pair(13, 17)
+    )
+    
+    val handColor = if (handIndex == 0) Color.Blue else Color.Green
+    
+    // Draw connections
+    connections.forEach { (startIdx, endIdx) ->
+        if (startIdx < landmarks.size && endIdx < landmarks.size) {
+            val startPoint = Offset(
+                landmarks[startIdx].x * canvasSize.width,
+                landmarks[startIdx].y * canvasSize.height
+            )
+            val endPoint = Offset(
+                landmarks[endIdx].x * canvasSize.width,
+                landmarks[endIdx].y * canvasSize.height
+            )
+            
+            drawLine(
+                color = handColor,
+                start = startPoint,
+                end = endPoint,
+                strokeWidth = 4f
+            )
+        }
+    }
+}
+
+/**
+ * Draw individual landmark points
+ */
+private fun DrawScope.drawLandmarkPoints(
+    landmarks: List<LandmarkPoint>,
+    canvasSize: androidx.compose.ui.geometry.Size,
+    handIndex: Int
+) {
+    val pointColor = if (handIndex == 0) Color.Cyan else Color.Yellow
+    val pointRadius = 6f
+    
+    landmarks.forEach { landmark ->
+        val position = Offset(
+            landmark.x * canvasSize.width,
+            landmark.y * canvasSize.height
+        )
+        
+        // Draw filled circle
+        drawCircle(
+            color = pointColor,
+            radius = pointRadius,
+            center = position
+        )
+        
+        // Draw outline
+        drawCircle(
+            color = Color.White,
+            radius = pointRadius,
+            center = position,
+            style = Stroke(width = 2f)
+        )
     }
 }

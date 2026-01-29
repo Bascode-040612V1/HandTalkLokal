@@ -1,5 +1,587 @@
 {
-  "created_at": "2026-01-21T17:10:57.542514",
-  "last_updated": "2026-01-21T17:10:57.544378",
-  "gestures": {}
+  "created_at": "2026-01-26T11:19:40.812979",
+  "last_updated": "2026-01-27T15:57:33.315454",
+  "gestures": {
+    "Hello": {
+      "first_added": "2026-01-26 11:20:48",
+      "last_added": "2026-01-27 14:35:36",
+      "total_collections": 4,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Hello_seq_001_20260126_112048.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-26 11:20:48",
+          "size_bytes": 60502
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Hello_seq_002_20260126_112122.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-26 11:21:22",
+          "size_bytes": 60543
+        },
+        {
+          "sequence_number": 3,
+          "file_path": "data/arm_hand_sequences/gesture_Hello_seq_003_20260127_143134.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:31:34",
+          "size_bytes": 60507
+        },
+        {
+          "sequence_number": 4,
+          "file_path": "data/arm_hand_sequences/gesture_Hello_seq_004_20260127_143536.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:35:36",
+          "size_bytes": 60513
+        }
+      ]
+    },
+    "Good": {
+      "first_added": "2026-01-26 11:22:33",
+      "last_added": "2026-01-27 14:23:16",
+      "total_collections": 4,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Good_seq_001_20260126_112233.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-26 11:22:33",
+          "size_bytes": 80685
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Good_seq_002_20260126_112303.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-26 11:23:03",
+          "size_bytes": 80101
+        },
+        {
+          "sequence_number": 3,
+          "file_path": "data/arm_hand_sequences/gesture_Good_seq_003_20260127_142243.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:22:43",
+          "size_bytes": 79990
+        },
+        {
+          "sequence_number": 4,
+          "file_path": "data/arm_hand_sequences/gesture_Good_seq_004_20260127_142316.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:23:16",
+          "size_bytes": 79955
+        }
+      ]
+    },
+    "Morning": {
+      "first_added": "2026-01-26 11:23:55",
+      "last_added": "2026-01-27 14:21:49",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Morning_seq_001_20260126_112354.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-26 11:23:55",
+          "size_bytes": 80566
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Morning_seq_002_20260127_142149.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:21:49",
+          "size_bytes": 80448
+        }
+      ]
+    },
+    "Afternoon": {
+      "first_added": "2026-01-27 14:28:54",
+      "last_added": "2026-01-27 14:29:23",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Afternoon_seq_001_20260127_142854.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:28:54",
+          "size_bytes": 80107
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Afternoon_seq_002_20260127_142923.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:29:23",
+          "size_bytes": 80174
+        }
+      ]
+    },
+    "Night": {
+      "first_added": "2026-01-27 14:39:23",
+      "last_added": "2026-01-27 14:39:46",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Night_seq_001_20260127_143923.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:39:23",
+          "size_bytes": 80089
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Night_seq_002_20260127_143946.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:39:46",
+          "size_bytes": 80076
+        }
+      ]
+    },
+    "What": {
+      "first_added": "2026-01-27 14:44:40",
+      "last_added": "2026-01-27 15:00:00",
+      "total_collections": 6,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_What_seq_001_20260127_144440.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:44:40",
+          "size_bytes": 56402
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_What_seq_002_20260127_144522.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:45:22",
+          "size_bytes": 43368
+        },
+        {
+          "sequence_number": 3,
+          "file_path": "data/arm_hand_sequences/gesture_What_seq_003_20260127_144558.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:45:58",
+          "size_bytes": 41862
+        },
+        {
+          "sequence_number": 4,
+          "file_path": "data/arm_hand_sequences/gesture_What_seq_004_20260127_144638.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:46:38",
+          "size_bytes": 52689
+        },
+        {
+          "sequence_number": 5,
+          "file_path": "data/arm_hand_sequences/gesture_What_seq_005_20260127_144722.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:47:22",
+          "size_bytes": 60223
+        },
+        {
+          "sequence_number": 6,
+          "file_path": "data/arm_hand_sequences/gesture_What_seq_006_20260127_150000.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:00:00",
+          "size_bytes": 60098
+        }
+      ]
+    },
+    "Why": {
+      "first_added": "2026-01-27 14:53:54",
+      "last_added": "2026-01-27 14:54:43",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Why_seq_001_20260127_145354.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:53:54",
+          "size_bytes": 60240
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Why_seq_002_20260127_145443.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:54:43",
+          "size_bytes": 60304
+        }
+      ]
+    },
+    "Who": {
+      "first_added": "2026-01-27 14:57:40",
+      "last_added": "2026-01-27 14:58:04",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Who_seq_001_20260127_145740.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:57:40",
+          "size_bytes": 60196
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Who_seq_002_20260127_145804.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 14:58:04",
+          "size_bytes": 60195
+        }
+      ]
+    },
+    "Where": {
+      "first_added": "2026-01-27 15:01:52",
+      "last_added": "2026-01-27 15:08:03",
+      "total_collections": 6,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Where_seq_001_20260127_150152.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:01:52",
+          "size_bytes": 79804
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Where_seq_002_20260127_150341.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:03:41",
+          "size_bytes": 80026
+        },
+        {
+          "sequence_number": 3,
+          "file_path": "data/arm_hand_sequences/gesture_Where_seq_003_20260127_150540.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:05:40",
+          "size_bytes": 80403
+        },
+        {
+          "sequence_number": 4,
+          "file_path": "data/arm_hand_sequences/gesture_Where_seq_004_20260127_150642.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:06:43",
+          "size_bytes": 80447
+        },
+        {
+          "sequence_number": 5,
+          "file_path": "data/arm_hand_sequences/gesture_Where_seq_005_20260127_150739.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:07:39",
+          "size_bytes": 80227
+        },
+        {
+          "sequence_number": 6,
+          "file_path": "data/arm_hand_sequences/gesture_Where_seq_006_20260127_150803.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:08:03",
+          "size_bytes": 79926
+        }
+      ]
+    },
+    "Which": {
+      "first_added": "2026-01-27 15:11:36",
+      "last_added": "2026-01-27 15:12:43",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Which_seq_001_20260127_151136.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:11:36",
+          "size_bytes": 80149
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Which_seq_002_20260127_151243.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:12:43",
+          "size_bytes": 80147
+        }
+      ]
+    },
+    "When": {
+      "first_added": "2026-01-27 15:13:56",
+      "last_added": "2026-01-27 15:16:20",
+      "total_collections": 4,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_When_seq_001_20260127_151356.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:13:56",
+          "size_bytes": 60026
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_When_seq_002_20260127_151508.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:15:08",
+          "size_bytes": 59448
+        },
+        {
+          "sequence_number": 3,
+          "file_path": "data/arm_hand_sequences/gesture_When_seq_003_20260127_151541.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:15:41",
+          "size_bytes": 60091
+        },
+        {
+          "sequence_number": 4,
+          "file_path": "data/arm_hand_sequences/gesture_When_seq_004_20260127_151620.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:16:20",
+          "size_bytes": 61020
+        }
+      ]
+    },
+    "How": {
+      "first_added": "2026-01-27 15:18:58",
+      "last_added": "2026-01-27 15:19:38",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_How_seq_001_20260127_151858.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:18:58",
+          "size_bytes": 80575
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_How_seq_002_20260127_151938.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:19:38",
+          "size_bytes": 80675
+        }
+      ]
+    },
+    "See You Soon": {
+      "first_added": "2026-01-27 15:21:45",
+      "last_added": "2026-01-27 15:23:09",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_See You Soon_seq_001_20260127_152145.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:21:45",
+          "size_bytes": 61444
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_See You Soon_seq_002_20260127_152309.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:23:09",
+          "size_bytes": 61437
+        }
+      ]
+    },
+    "Goodbye": {
+      "first_added": "2026-01-27 15:24:20",
+      "last_added": "2026-01-27 15:27:15",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Goodbye_seq_001_20260127_152420.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:24:20",
+          "size_bytes": 60380
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Goodbye_seq_002_20260127_152715.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:27:15",
+          "size_bytes": 60468
+        }
+      ]
+    },
+    "You": {
+      "first_added": "2026-01-27 15:30:18",
+      "last_added": "2026-01-27 15:30:42",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_You_seq_001_20260127_153018.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:30:18",
+          "size_bytes": 60057
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_You_seq_002_20260127_153042.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:30:42",
+          "size_bytes": 59984
+        }
+      ]
+    },
+    "Im": {
+      "first_added": "2026-01-27 15:33:29",
+      "last_added": "2026-01-27 15:33:50",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Im_seq_001_20260127_153329.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:33:29",
+          "size_bytes": 59880
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Im_seq_002_20260127_153350.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:33:50",
+          "size_bytes": 60050
+        }
+      ]
+    },
+    "Fine": {
+      "first_added": "2026-01-27 15:34:50",
+      "last_added": "2026-01-27 15:35:12",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Fine_seq_001_20260127_153450.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:34:50",
+          "size_bytes": 60264
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Fine_seq_002_20260127_153512.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:35:12",
+          "size_bytes": 60382
+        }
+      ]
+    },
+    "Please": {
+      "first_added": "2026-01-27 15:36:09",
+      "last_added": "2026-01-27 15:36:33",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Please_seq_001_20260127_153609.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:36:09",
+          "size_bytes": 60535
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Please_seq_002_20260127_153633.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:36:33",
+          "size_bytes": 60502
+        }
+      ]
+    },
+    "Thank You": {
+      "first_added": "2026-01-27 15:38:45",
+      "last_added": "2026-01-27 15:39:12",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Thank You_seq_001_20260127_153845.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:38:45",
+          "size_bytes": 80642
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Thank You_seq_002_20260127_153912.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:39:12",
+          "size_bytes": 80647
+        }
+      ]
+    },
+    "Welcome": {
+      "first_added": "2026-01-27 15:39:59",
+      "last_added": "2026-01-27 15:40:29",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Welcome_seq_001_20260127_153959.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:39:59",
+          "size_bytes": 60399
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Welcome_seq_002_20260127_154029.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:40:29",
+          "size_bytes": 60158
+        }
+      ]
+    },
+    "Sorry": {
+      "first_added": "2026-01-27 15:43:20",
+      "last_added": "2026-01-27 15:43:45",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Sorry_seq_001_20260127_154320.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:43:20",
+          "size_bytes": 60669
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Sorry_seq_002_20260127_154345.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:43:45",
+          "size_bytes": 60682
+        }
+      ]
+    },
+    "Hungry": {
+      "first_added": "2026-01-27 15:44:41",
+      "last_added": "2026-01-27 15:45:04",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Hungry_seq_001_20260127_154441.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:44:41",
+          "size_bytes": 60390
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Hungry_seq_002_20260127_154504.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:45:04",
+          "size_bytes": 60426
+        }
+      ]
+    },
+    "Name": {
+      "first_added": "2026-01-27 15:57:09",
+      "last_added": "2026-01-27 15:57:33",
+      "total_collections": 2,
+      "sequences": [
+        {
+          "sequence_number": 1,
+          "file_path": "data/arm_hand_sequences/gesture_Name_seq_001_20260127_155709.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:57:09",
+          "size_bytes": 80063
+        },
+        {
+          "sequence_number": 2,
+          "file_path": "data/arm_hand_sequences/gesture_Name_seq_002_20260127_155733.json",
+          "frame_count": 20,
+          "collection_date": "2026-01-27 15:57:33",
+          "size_bytes": 79955
+        }
+      ]
+    }
+  }
 }
