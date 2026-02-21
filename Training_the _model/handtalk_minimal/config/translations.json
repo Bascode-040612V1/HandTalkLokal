@@ -66,7 +66,7 @@
   "Soon": {
     "en": "Soon",
     "tl": "Sa lalong madaling panahon",
-    "fil": "Sa lalong madaling panahon", 
+    "fil": "Sa lalong madaling panahon",
     "hil": "Dayon",
     "ceb": "Dayon",
     "mrn": "Agto"
@@ -102,5 +102,133 @@
     "hil": "Paki",
     "ceb": "Paki",
     "mrn": "Paki"
+  },
+  "Fine": {
+    "en": "Fine",
+    "tl": "Fine",
+    "fil": "Fine",
+    "hil": "Fine",
+    "ceb": "Fine",
+    "mrn": "Fine"
+  },
+  "Goodbye": {
+    "en": "Goodbye",
+    "tl": "Goodbye",
+    "fil": "Goodbye",
+    "hil": "Goodbye",
+    "ceb": "Goodbye",
+    "mrn": "Goodbye"
+  },
+  "How": {
+    "en": "How",
+    "tl": "How",
+    "fil": "How",
+    "hil": "How",
+    "ceb": "How",
+    "mrn": "How"
+  },
+  "Hungry": {
+    "en": "Hungry",
+    "tl": "Hungry",
+    "fil": "Hungry",
+    "hil": "Hungry",
+    "ceb": "Hungry",
+    "mrn": "Hungry"
+  },
+  "Im": {
+    "en": "Im",
+    "tl": "Im",
+    "fil": "Im",
+    "hil": "Im",
+    "ceb": "Im",
+    "mrn": "Im"
+  },
+  "NO_GESTURE": {
+    "en": "NO_GESTURE",
+    "tl": "NO_GESTURE",
+    "fil": "NO_GESTURE",
+    "hil": "NO_GESTURE",
+    "ceb": "NO_GESTURE",
+    "mrn": "NO_GESTURE"
+  },
+  "Name": {
+    "en": "Name",
+    "tl": "Name",
+    "fil": "Name",
+    "hil": "Name",
+    "ceb": "Name",
+    "mrn": "Name"
+  },
+  "Night": {
+    "en": "Night",
+    "tl": "Night",
+    "fil": "Night",
+    "hil": "Night",
+    "ceb": "Night",
+    "mrn": "Night"
+  },
+  "Sorry": {
+    "en": "Sorry",
+    "tl": "Sorry",
+    "fil": "Sorry",
+    "hil": "Sorry",
+    "ceb": "Sorry",
+    "mrn": "Sorry"
+  },
+  "Thank You": {
+    "en": "Thank You",
+    "tl": "Thank You",
+    "fil": "Thank You",
+    "hil": "Thank You",
+    "ceb": "Thank You",
+    "mrn": "Thank You"
+  },
+  "What": {
+    "en": "What",
+    "tl": "What",
+    "fil": "What",
+    "hil": "What",
+    "ceb": "What",
+    "mrn": "What"
+  },
+  "When": {
+    "en": "When",
+    "tl": "When",
+    "fil": "When",
+    "hil": "When",
+    "ceb": "When",
+    "mrn": "When"
+  },
+  "Where": {
+    "en": "Where",
+    "tl": "Where",
+    "fil": "Where",
+    "hil": "Where",
+    "ceb": "Where",
+    "mrn": "Where"
+  },
+  "Which": {
+    "en": "Which",
+    "tl": "Which",
+    "fil": "Which",
+    "hil": "Which",
+    "ceb": "Which",
+    "mrn": "Which"
+  },
+  "Who": {
+    "en": "Who",
+    "tl": "Who",
+    "fil": "Who",
+    "hil": "Who",
+    "ceb": "Who",
+    "mrn": "Who"
+  },
+  "Why": {
+    "en": "Why",
+    "tl": "Why",
+    "fil": "Why",
+    "hil": "Why",
+    "ceb": "Why",
+    "mrn": "Why"
   }
 }

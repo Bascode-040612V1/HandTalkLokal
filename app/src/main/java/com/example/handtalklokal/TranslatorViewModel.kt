@@ -382,7 +382,7 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
                 _confidenceLevel.value = recognitionResult.confidence
                 
                 // Only update text if we recognized a high confidence gesture
-                if (recognitionResult.gesture.isNotEmpty() && recognitionResult.gesture != "Unknown" && recognitionResult.gesture != "Error" && recognitionResult.gesture != "Unrecognized (Medium Confidence)") {
+                if (recognitionResult.gesture.isNotEmpty() && recognitionResult.gesture != "Unknown" && recognitionResult.gesture != "Error" && recognitionResult.gesture != "Unrecognized (Medium Confidence)" && recognitionResult.gesture != "NO_GESTURE") {
                     // Check for duplicate gesture suppression
                     val currentTime = System.currentTimeMillis()
                     val isDuplicateGesture = recognitionResult.gesture == lastAcceptedGesture && 
@@ -426,6 +426,12 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
     
     private fun handleGestureImmediately(gesture: String, confidence: Float) {
         Log.d("TranslationDebug", "Gesture received: $gesture, current dialect: ${_selectedDialect.value}")
+        
+        // Don't process NO_GESTURE at all - requirement: leave sentence box blank
+        if (gesture == "NO_GESTURE") {
+            Log.d("TranslationDebug", "NO_GESTURE detected, skipping all processing")
+            return
+        }
         
         // Sanitize the gesture to match exactly with translation map keys
         val sanitizedGesture = gesture.replace(Regex("[^a-zA-Z\\s]"), "").trim()
@@ -504,7 +510,16 @@ class TranslatorViewModel(application: Application) : AndroidViewModel(applicati
         val result = if (phraseTranslations != null) {
             // Only return translation for the selected dialect, no fallback to English
             val selectedDialectValue = _selectedDialect.value
-            phraseTranslations[selectedDialectValue] ?: ""
+            val translatedValue = phraseTranslations[selectedDialectValue] ?: ""
+            
+            // Additional check: if the translation is the same as the original gesture (English),
+            // return empty string to prevent English words from leaking
+            if (translatedValue.equals(gesture, ignoreCase = true)) {
+                Log.d("TranslationDebug", "Translation \'$translatedValue\' is same as original gesture \'$gesture\', returning empty string to prevent English leakage")
+                ""
+            } else {
+                translatedValue
+            }
         } else {
             // If no translation exists for this gesture at all, return empty string
             ""

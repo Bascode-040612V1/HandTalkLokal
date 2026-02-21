@@ -70,9 +70,6 @@ dependencies {
     // Extended Material Icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     
-    // TensorFlow Lite
-    implementation("org.tensorflow:tensorflow-lite:2.13.0")
-    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
     
     // MediaPipe Tasks Vision
     implementation("com.google.mediapipe:tasks-vision:0.10.14")

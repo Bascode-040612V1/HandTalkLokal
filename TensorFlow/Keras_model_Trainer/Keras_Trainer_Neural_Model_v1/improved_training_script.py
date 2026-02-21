@@ -15,7 +15,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 import warnings
 warnings.filterwarnings('ignore')
 
-def load_and_preprocess_data(data_path='sign_language_data.csv'):
+def load_and_preprocess_data(data_path='../../../Training_the _model/handtalk_minimal/data/gestures_bimanual.csv'):
     """
     Load and preprocess the gesture data with quality checks
     """

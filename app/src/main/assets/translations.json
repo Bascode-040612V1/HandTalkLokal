@@ -2,13 +2,15 @@
   "Hello": {
     "en": "Hello",
     "tl": "Kumusta",
+    "fil": "Kumusta",
     "hil": "Kamusta",
     "ceb": "Kumusta",
     "mrn": "Assalamu Alaikum"
   },
   "Hi": {
     "en": "Hi",
-    "tl": "Kumusta",
+    "tl": "Kamusta",
+    "fil": "Kumusta",
     "hil": "Kamusta",
     "ceb": "Kumusta",
     "mrn": "Assalamu"
@@ -16,6 +18,7 @@
   "Morning": {
     "en": "Morning",
     "tl": "Agahan",
+    "fil": "Agahan",
     "hil": "Agahon",
     "ceb": "Mading",
     "mrn": "Mading"
@@ -23,13 +26,23 @@
   "Noon": {
     "en": "Noon",
     "tl": "Tanghali",
+    "fil": "Tanghali",
     "hil": "Tanghali",
     "ceb": "Tanghali",
     "mrn": "Tanghali"
   },
+  "Afternoon": {
+    "en": "Afternoon",
+    "tl": "Hapon",
+    "fil": "Hapon",
+    "hil": "Hapon",
+    "ceb": "Hapon",
+    "mrn": "Hapon"
+  },
   "Bye": {
     "en": "Bye",
     "tl": "Paalam",
+    "fil": "Paalam",
     "hil": "Palay",
     "ceb": "Abay",
     "mrn": "Alay"
@@ -37,6 +50,7 @@
   "Thank you": {
     "en": "Thank you",
     "tl": "Salamat",
+    "fil": "Salamat",
     "hil": "Salamat",
     "ceb": "Salamat",
     "mrn": "Salamat"
@@ -44,41 +58,31 @@
   "Good": {
     "en": "Good",
     "tl": "Maganda",
+    "fil": "Maganda",
     "hil": "Maayong",
     "ceb": "Maayo",
     "mrn": "Tambay"
   },
-  "Afternoon": {
-    "en": "Afternoon",
-    "tl": "Hapon",
-    "hil": "Hapon",
-    "ceb": "Hapon",
-    "mrn": "Hapon"
-  },
-  "Please": {
-    "en": "Please",
-    "tl": "Paki",
-    "hil": "Paki",
-    "ceb": "Paki",
-    "mrn": "Paki"
-  },
-  "See": {
-    "en": "See",
-    "tl": "Kita",
-    "hil": "Kita",
-    "ceb": "Kita",
-    "mrn": "Say"
-  },
   "Soon": {
     "en": "Soon",
     "tl": "Sa lalong madaling panahon",
+    "fil": "Sa lalong madaling panahon",
     "hil": "Dayon",
     "ceb": "Dayon",
     "mrn": "Agto"
   },
+  "See": {
+    "en": "See",
+    "tl": "Kita",
+    "fil": "Kita",
+    "hil": "Kita",
+    "ceb": "Kita",
+    "mrn": "Say"
+  },
   "Welcome": {
     "en": "Welcome",
     "tl": "Maligayang pagdating",
+    "fil": "Maligayang pagdating",
     "hil": "Malipayon nga pag-abot",
     "ceb": "Maayong pag-abot",
     "mrn": "Tara"
@@ -86,8 +90,145 @@
   "You": {
     "en": "You",
     "tl": "Ikaw",
+    "fil": "Ikaw",
     "hil": "Ikaw",
     "ceb": "Ikaw",
     "mrn": "Sikaw"
+  },
+  "Please": {
+    "en": "Please",
+    "tl": "Paki",
+    "fil": "Paki",
+    "hil": "Paki",
+    "ceb": "Paki",
+    "mrn": "Paki"
+  },
+  "Fine": {
+    "en": "Fine",
+    "tl": "Ayos",
+    "fil": "Ayos",
+    "hil": "Maopay",
+    "ceb": "Maayo",
+    "mrn": "Maayong"
+  },
+  "Goodbye": {
+    "en": "Goodbye",
+    "tl": "Paalam",
+    "fil": "Paalam",
+    "hil": "Palay",
+    "ceb": "Abay",
+    "mrn": "Alay"
+  },
+  "How": {
+    "en": "How",
+    "tl": "Paano",
+    "fil": "Paano",
+    "hil": "Unsaon",
+    "ceb": "Unsaon",
+    "mrn": "Pano"
+  },
+  "Hungry": {
+    "en": "Hungry",
+    "tl": "Gutom",
+    "fil": "Gutom",
+    "hil": "Gutmon",
+    "ceb": "Gutmon",
+    "mrn": "Gutma"
+  },
+  "Im": {
+    "en": "Im",
+    "tl": "Ako",
+    "fil": "Ako",
+    "hil": "Ako",
+    "ceb": "Ako",
+    "mrn": "Sakay"
+  },
+  "NO_GESTURE": {
+    "en": "NO_GESTURE",
+    "tl": "NO_GESTURE",
+    "fil": "NO_GESTURE",
+    "hil": "NO_GESTURE",
+    "ceb": "NO_GESTURE",
+    "mrn": "NO_GESTURE"
+  },
+  "Name": {
+    "en": "Name",
+    "tl": "Pangalan",
+    "fil": "Pangalan",
+    "hil": "Ngalan",
+    "ceb": "Ngalan",
+    "mrn": "Ngalan"
+  },
+  "Night": {
+    "en": "Night",
+    "tl": "Gabing",
+    "fil": "Gabing",
+    "hil": "Gabii",
+    "ceb": "Gabii",
+    "mrn": "Gabing"
+  },
+  "Sorry": {
+    "en": "Sorry",
+    "tl": "Paumanhin",
+    "fil": "Paumanhin",
+    "hil": "Pasayloa",
+    "ceb": "Pasayloa",
+    "mrn": "Pasanin"
+  },
+  "Thank You": {
+    "en": "Thank You",
+    "tl": "Salamat",
+    "fil": "Salamat",
+    "hil": "Salamat",
+    "ceb": "Salamat",
+    "mrn": "Salamat"
+  },
+  "What": {
+    "en": "What",
+    "tl": "Ano",
+    "fil": "Ano",
+    "hil": "Unsa",
+    "ceb": "Unsa",
+    "mrn": "Ayan"
+  },
+  "When": {
+    "en": "When",
+    "tl": "Kailan",
+    "fil": "Kailan",
+    "hil": "Kanusan",
+    "ceb": "Kanusa",
+    "mrn": "Kaynin"
+  },
+  "Where": {
+    "en": "Where",
+    "tl": "Saan",
+    "fil": "Saan",
+    "hil": "Diin",
+    "ceb": "Diin",
+    "mrn": "Dayi"
+  },
+  "Which": {
+    "en": "Which",
+    "tl": "Alin",
+    "fil": "Alin",
+    "hil": "Hin-o",
+    "ceb": "Hin-o",
+    "mrn": "Alay"
+  },
+  "Who": {
+    "en": "Who",
+    "tl": "Sino",
+    "fil": "Sino",
+    "hil": "Hin-o",
+    "ceb": "Hin-o",
+    "mrn": "Sino"
+  },
+  "Why": {
+    "en": "Why",
+    "tl": "Bakit",
+    "fil": "Bakit",
+    "hil": "Ngano",
+    "ceb": "Ngano",
+    "mrn": "Bakit"
   }
 }

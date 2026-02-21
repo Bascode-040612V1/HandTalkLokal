@@ -2,14 +2,6 @@ package com.example.handtalklokal
 
 import android.content.Context
 import android.util.Log
-import org.tensorflow.lite.support.common.FileUtil
-import org.tensorflow.lite.Interpreter
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.MappedByteBuffer
 
 
 // Data class to hold recognition result with confidence level
@@ -20,147 +12,176 @@ data class RecognitionResult(
 )
 
 class GestureRecognitionHelper(private val context: Context) {
-    private var interpreter: Interpreter? = null
+    private var taskFileManager: TaskFileManager = TaskFileManager(context)
     private var labels: List<String> = listOf()
     private val inputTensorSize = 138 // Number of features in your dataset
     
+    // Dual-threshold system based on empirical logs
+    private val ACCEPT_THRESHOLD = 6.3f  // Confident match threshold
+    private val REJECT_THRESHOLD = 7.6f  // Definitely not a gesture threshold
+    
+    // Temporal stability requirements
+    private var lastStableGesture: String? = null
+    private var stableFrameCounter: Int = 0
+    private val STABLE_FRAMES = 5  // Require N consecutive frames for acceptance
+    
     init {
         try {
-            // Load the TensorFlow Lite model
-            val model = loadModelFile()
-            interpreter = Interpreter(model)
-            
-            // Load labels
-            labels = loadLabels()
-            
-            Log.d("GestureRecognition", "Model and labels loaded successfully")
-            Log.d("GestureRecognition", "Labels order: $labels")
-            Log.d("GestureRecognition", "Model output shape: ${interpreter?.getOutputTensor(0)?.shape()?.joinToString(", ")}")
-        } catch (e: Exception) {
-            Log.e("GestureRecognition", "Error loading model or labels", e)
-        }
-    }
-    
-    @Throws(IOException::class)
-    private fun loadModelFile(): MappedByteBuffer {
-        return FileUtil.loadMappedFile(context, "gesture_model.tflite")
-    }
-
-    private fun loadLabels(): List<String> {
-        try {
-            val labels = mutableListOf<String>()
-            val inputStream = context.assets.open("labels.txt")
-            val reader = BufferedReader(InputStreamReader(inputStream, Charsets.UTF_8))
-            reader.forEachLine { line ->
-                if (line.isNotBlank()) {
-                    // Clean the line to remove any invisible characters
-                    val cleanLine = line.trim().replace("\\s+".toRegex(), " ")
-                    labels.add(cleanLine)
-                }
+            // Load the gesture task file
+            val loaded = taskFileManager.loadTaskFile()
+            if (loaded) {
+                // Initialize labels from the loaded task file
+                labels = taskFileManager.getAllGestureLabels().toList()
+                
+                Log.d("GestureRecognition", "Task file and labels loaded successfully")
+                Log.d("GestureRecognition", "Labels order: $labels")
+                Log.d("GestureRecognition", "Loaded ${taskFileManager.getGestureCount()} gestures")
+            } else {
+                Log.e("GestureRecognition", "Failed to load task file")
             }
-            reader.close()
-            Log.d("GestureRecognition", "Loaded ${labels.size} labels: $labels")
-            return labels
-        } catch (e: IOException) {
-            Log.e("GestureRecognition", "Error loading labels", e)
-            return listOf()
+        } catch (e: Exception) {
+            Log.e("GestureRecognition", "Error loading task file", e)
         }
     }
     
     /**
-     * Recognize gesture from extracted features
+     * Recognize gesture from extracted features using Euclidean distance
      *
      * @param features Array of 138 float values representing hand and pose landmarks
      * @return RecognitionResult with gesture label and confidence level
      */
     fun recognizeGesture(features: FloatArray): RecognitionResult {
-        if (interpreter == null || features.size != inputTensorSize) {
-            Log.w("GestureRecognition", "Interpreter not initialized or features size mismatch. Features size: ${features.size}, Expected: $inputTensorSize")
+        if (features.size != inputTensorSize) {
+            Log.w("GestureRecognition", "Features size mismatch. Features size: ${features.size}, Expected: $inputTensorSize")
             return RecognitionResult("Unknown", 0.0f, "Low")
         }
         
-        try {
-            // Prepare input buffer
-            val inputBuffer = ByteBuffer.allocateDirect(4 * inputTensorSize)
-            inputBuffer.order(ByteOrder.nativeOrder())
-            
-            // Put features into buffer
-            for (feature in features) {
-                inputBuffer.putFloat(feature)
-            }
-            
-            // Get the model's actual output shape to determine how many classes it was trained on
-            val modelOutputShape = interpreter?.getOutputTensor(0)?.shape()
-            val modelNumClasses = if (modelOutputShape != null && modelOutputShape.size > 1) {
-                modelOutputShape[1] // Second dimension is number of classes
-            } else {
-                8 // Default fallback
-            }
-            
-            Log.d("GestureRecognition", "Model expects $modelNumClasses output classes, we have ${labels.size} labels")
-            
-            // Prepare output buffer based on model's expected output size, not label size
-            val outputBuffer = Array(1) { FloatArray(modelNumClasses) }
-            
-            // Run inference
-            interpreter?.run(inputBuffer, outputBuffer)
-            
-            // Get the result with highest probability
-            val probabilities = outputBuffer[0]
-            var maxProb = -1.0f
-            var maxIndex = -1
-            
-            Log.d("GestureRecognition", "Model output probabilities:")
-            for (i in probabilities.indices) {
-                val labelForIndex = if (i < labels.size) labels[i] else "UNKNOWN_INDEX_$i"
-                Log.d("GestureRecognition", "  Index $i ($labelForIndex): ${probabilities[i]}")
-                if (i < modelNumClasses && probabilities[i] > maxProb) {
-                    maxProb = probabilities[i]
-                    maxIndex = i
-                }
-            }
-            
-            Log.d("GestureRecognition", "Max probability: $maxProb, Index: $maxIndex")
-            
-            // Define confidence thresholds matching Training_the_model configuration
-            val highConfidenceThreshold = 0.7f
-            val mediumConfidenceThreshold = 0.4f
-            
-            return when {
-                maxProb >= highConfidenceThreshold && maxIndex >= 0 && maxIndex < labels.size -> {
-                    val result = labels[maxIndex]
-                    // Sanitize the result to remove any non-printable characters
-                    val sanitizedResult = result.replace(Regex("[^\\p{Print}]"), "").trim()
-                    Log.d("GestureRecognition", "High confidence recognized gesture: $result (sanitized to: $sanitizedResult)")
-                    RecognitionResult(sanitizedResult, maxProb, "High")
-                }
-                maxProb >= mediumConfidenceThreshold && maxIndex >= 0 && maxIndex < labels.size -> {
-                    val result = labels[maxIndex]
-                    // Sanitize the result to remove any non-printable characters
-                    val sanitizedResult = result.replace(Regex("[^\\p{Print}]"), "").trim()
-                    Log.d("GestureRecognition", "Medium confidence recognized gesture: $result (sanitized to: $sanitizedResult)")
-                    RecognitionResult(sanitizedResult, maxProb, "Medium")
-                }
-                else -> {
-                    Log.d("GestureRecognition", "Low confidence or invalid index. Returning Unknown")
-                    RecognitionResult("Unknown", maxProb, "Low")
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("GestureRecognition", "Error during inference", e)
-            return RecognitionResult("Error", 0.0f, "Error")
+        Log.d("GestureRecognition", "Received ${features.size} features for recognition")
+        
+        // Check if task file is loaded
+        if (!taskFileManager.isLoaded()) {
+            Log.e("GestureRecognition", "Task file not loaded")
+            return RecognitionResult("Unknown", 0.0f, "Low")
         }
+        
+        // Find the closest matching gesture using Euclidean distance
+        val result = findClosestGesture(features)
+        
+        return result
+    }
+    
+    /**
+     * Find the closest matching gesture by computing Euclidean distance
+     * to all samples in the task file
+     */
+    private fun findClosestGesture(features: FloatArray): RecognitionResult {
+        var minDistance = Float.MAX_VALUE
+        var closestGesture = "Unknown"
+        var closestConfidence = 0.0f
+        
+        // Iterate through all gestures and their samples
+        for (gestureLabel in taskFileManager.getAllGestureLabels()) {
+            val gestureDefinition = taskFileManager.getGestureByLabel(gestureLabel)
+            gestureDefinition?.samples?.forEach { sample ->
+                val distance = computeEuclideanDistance(features, sample.features)
+                
+                // Log distance for debugging (optional, can be removed later)
+                Log.v("GestureRecognition", "Gesture: $gestureLabel, Distance: $distance")
+                
+                if (distance < minDistance) {
+                    minDistance = distance
+                    closestGesture = gestureLabel
+                    // Convert distance to confidence (inverse relationship)
+                    // Confidence decreases as distance increases
+                    closestConfidence = if (distance <= ACCEPT_THRESHOLD) {
+                        kotlin.math.min(kotlin.math.max((1.0f - (distance / ACCEPT_THRESHOLD)), 0.0f), 1.0f)
+                    } else {
+                        0.0f
+                    }
+                }
+            }
+        }
+        
+        Log.d("GestureRecognition", "Closest gesture: $closestGesture, Distance: $minDistance, Confidence: $closestConfidence")
+        
+        // Dual-threshold decision logic
+        val (finalGesture, finalConfidence, finalConfidenceLevel) = when {
+            minDistance <= ACCEPT_THRESHOLD -> {
+                // Confident match - increment stability counter
+                if (closestGesture == lastStableGesture) {
+                    stableFrameCounter++
+                } else {
+                    stableFrameCounter = 1
+                    lastStableGesture = closestGesture
+                }
+                
+                val outputGesture = if (stableFrameCounter >= STABLE_FRAMES) {
+                    closestGesture
+                } else {
+                    lastStableGesture ?: "NO_GESTURE"
+                }
+                
+                // Calculate confidence based on accept threshold
+                val conf = kotlin.math.min(kotlin.math.max((1.0f - (minDistance / ACCEPT_THRESHOLD)), 0.0f), 1.0f)
+                val confLevel = when {
+                    conf > 0.7 -> "High"
+                    conf > 0.4 -> "Medium"
+                    else -> "Low"
+                }
+                
+                Log.d("GESTURE_DEBUG", "best=$closestGesture dist=$minDistance zone=ACCEPT")
+                Triple(outputGesture, conf, confLevel)
+            }
+            
+            minDistance >= REJECT_THRESHOLD -> {
+                // Definitely not a gesture - reset stability
+                lastStableGesture = null
+                stableFrameCounter = 0
+                Log.d("GESTURE_DEBUG", "best=$closestGesture dist=$minDistance zone=REJECT")
+                Triple("NO_GESTURE", 0.0f, "Low")
+            }
+            
+            else -> {
+                // Gray zone - ambiguous, maintain previous stable gesture
+                Log.d("GESTURE_DEBUG", "best=$closestGesture dist=$minDistance zone=GRAY")
+                Triple(lastStableGesture ?: "NO_GESTURE", 0.0f, "Low")
+            }
+        }
+        
+        // Determine confidence level based on final confidence value
+        val confidenceLevel = when {
+            finalConfidence > 0.7 -> "High"
+            finalConfidence > 0.4 -> "Medium"
+            else -> "Low"
+        }
+        
+        return RecognitionResult(finalGesture, finalConfidence, finalConfidenceLevel)
+    }
+    
+    /**
+     * Compute Euclidean distance between two feature arrays
+     */
+    private fun computeEuclideanDistance(features1: FloatArray, features2: FloatArray): Float {
+        if (features1.size != features2.size) {
+            throw IllegalArgumentException("Feature arrays must have the same size")
+        }
+        
+        var sumSquaredDiff = 0.0f
+        for (i in features1.indices) {
+            val diff = features1[i] - features2[i]
+            sumSquaredDiff += diff * diff
+        }
+        
+        return kotlin.math.sqrt(sumSquaredDiff)
     }
     
     /**
      * Release resources
      */
     fun close() {
-        try {
-            interpreter?.close()
-            interpreter = null
-        } catch (e: Exception) {
-            Log.e("GestureRecognition", "Error closing interpreter", e)
-        }
+        // Reset stability counters
+        lastStableGesture = null
+        stableFrameCounter = 0
+        Log.d("GestureRecognition", "Gesture recognition helper closed")
     }
 }

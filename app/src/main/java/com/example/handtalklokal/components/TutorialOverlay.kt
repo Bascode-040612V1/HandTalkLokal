@@ -423,12 +423,12 @@ fun TutorialOverlay(
 @Composable
 fun Step0PermissionTutorial(onGrantPermission: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Welcome to Hand Talk Lokal!", fontSize = 20.sp, color = Color.Black)
+            Text("Welcome to Hand Talk Lokal!", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("First, we need camera permission to detect hand gestures.", fontSize = 16.sp)
+            Text("First, we need camera permission to detect hand gestures.", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
         }
@@ -438,12 +438,12 @@ fun Step0PermissionTutorial(onGrantPermission: () -> Unit, targetRect: Rect?) {
 @Composable
 fun Step1CameraTutorial(onNext: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Camera Preview", fontSize = 20.sp, color = Color.Black)
+            Text("Camera Preview", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Position your hands in the camera view to start detecting gestures.", fontSize = 16.sp)
+            Text("Position your hands in the camera view to start detecting gestures.", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onNext) {
@@ -456,12 +456,12 @@ fun Step1CameraTutorial(onNext: () -> Unit, targetRect: Rect?) {
 @Composable
 fun Step2OutputTutorial(onNext: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Sentence Output", fontSize = 20.sp, color = Color.Black)
+            Text("Sentence Output", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Detected signs will appear here as text that can be converted to speech.", fontSize = 16.sp)
+            Text("Detected signs will appear here as text that can be converted to speech.", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onNext) {
@@ -474,12 +474,12 @@ fun Step2OutputTutorial(onNext: () -> Unit, targetRect: Rect?) {
 @Composable
 fun Step3DialectTutorial(onDialectButtonClicked: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Select Dialect", fontSize = 20.sp, color = Color.Black)
+            Text("Select Dialect", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Tap the dialect button to choose your preferred dialect for translation.", fontSize = 16.sp)
+            Text("Tap the dialect button to choose your preferred dialect for translation.", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onDialectButtonClicked) {
@@ -492,12 +492,12 @@ fun Step3DialectTutorial(onDialectButtonClicked: () -> Unit, targetRect: Rect?) 
 @Composable
 fun Step4DialectDialogTutorial(onDialectSelected: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Choose Dialect", fontSize = 20.sp, color = Color.Black)
+            Text("Choose Dialect", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Select a dialect you want from the options displayed.", fontSize = 16.sp)
+            Text("Select a dialect you want from the options displayed.", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onDialectSelected) {
@@ -510,12 +510,12 @@ fun Step4DialectDialogTutorial(onDialectSelected: () -> Unit, targetRect: Rect?)
 @Composable
 fun Step5ClearButtonTutorial(onNext: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Clear Button", fontSize = 20.sp, color = Color.Black)
+            Text("Clear Button", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Use this button to clear the current translation.", fontSize = 16.sp)
+            Text("Use this button to clear the current translation.", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onNext) {
@@ -528,12 +528,12 @@ fun Step5ClearButtonTutorial(onNext: () -> Unit, targetRect: Rect?) {
 @Composable
 fun Step6NavigationTutorial(onNext: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Navigation", fontSize = 20.sp, color = Color.Black)
+            Text("Navigation", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Use the bottom navigation to switch between different app features.", fontSize = 16.sp)
+            Text("Use the bottom navigation to switch between different app features.", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onNext) {
@@ -546,12 +546,12 @@ fun Step6NavigationTutorial(onNext: () -> Unit, targetRect: Rect?) {
 @Composable
 fun Step7FinishTutorial(onFinish: () -> Unit, targetRect: Rect?) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text("Tutorial Complete!", fontSize = 20.sp, color = Color.Black)
+            Text("Tutorial Complete!", fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("You're now ready to use Hand Talk Lokal. Enjoy!", fontSize = 16.sp)
+            Text("You're now ready to use Hand Talk Lokal. Enjoy!", fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onFinish) {
@@ -564,12 +564,12 @@ fun Step7FinishTutorial(onFinish: () -> Unit, targetRect: Rect?) {
 @Composable
 fun StepPlaceholderTutorial(title: String, description: String, onNext: () -> Unit) {
     Box(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(Color.Black, RoundedCornerShape(8.dp))
         .padding(16.dp)) {
         Column {
-            Text(title, fontSize = 20.sp, color = Color.Black)
+            Text(title, fontSize = 20.sp, color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(description, fontSize = 16.sp)
+            Text(description, fontSize = 16.sp, color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             // Note: Do not add buttons to this tutorial overlay screen since there are already buttons in the translator screen
             Button(onClick = onNext) {
